@@ -29,14 +29,14 @@ export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
   const loadActivePromotions = async () => {
     const supabase = createClient()
     const now = new Date().toISOString()
-    
+
     const { data, error } = await supabase
       .from('promotions')
       .select('*')
       .eq('active', true)
       .or(`start_date.is.null,start_date.lte.${now}`)
       .or(`end_date.is.null,end_date.gte.${now}`)
-    
+
     if (!error && data) {
       setActivePromotions(data)
     }
@@ -192,7 +192,7 @@ export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
         </Card>
 
         {/* Dispositivos Conectados */}
-        <Card 
+        <Card
           className="p-6 border border-border bg-card hover:shadow-lg transition-shadow cursor-pointer"
           onClick={() => {
             setCurrentView("settings")

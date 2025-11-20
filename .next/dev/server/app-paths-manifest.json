@@ -1,4 +1,3 @@
 {
-  "/admin/page": "app/admin/page.js",
   "/protected/page": "app/protected/page.js"
 }
