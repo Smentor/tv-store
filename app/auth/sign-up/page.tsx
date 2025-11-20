@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { createClient } from "@/lib/supabase/client"
+import { registerUser } from "@/app/actions/auth-actions"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -16,6 +16,9 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [repeatPassword, setRepeatPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [whatsapp, setWhatsapp] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -23,7 +26,6 @@ export default function SignUpPage() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
@@ -33,19 +35,29 @@ export default function SignUpPage() {
       return
     }
 
+    if (password.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres")
+      setIsLoading(false)
+      return
+    }
+
     try {
-      const { error } = await supabase.auth.signUp({
+      const result = await registerUser({
         email,
         password,
-        options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/protected`,
-        },
+        first_name: firstName,
+        last_name: lastName,
+        whatsapp
       })
-      if (error) throw error
+
+      if (!result.success) {
+        throw new Error(result.error)
+      }
+
       setSuccess(true)
       setTimeout(() => {
         router.push("/auth/login")
-      }, 3000)
+      }, 2000)
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Error en registro")
     } finally {
@@ -64,7 +76,7 @@ export default function SignUpPage() {
                 <div className="text-center space-y-2">
                   <h2 className="text-xl font-bold text-foreground">Cuenta creada exitosamente</h2>
                   <p className="text-sm text-muted-foreground">
-                    Revisa tu email para confirmar tu cuenta. Serás redirigido al login en breve...
+                    Tu cuenta ha sido verificada automáticamente. Redirigiendo al login...
                   </p>
                 </div>
               </div>
@@ -86,7 +98,43 @@ export default function SignUpPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSignUp}>
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="firstname">Nombre</Label>
+                      <Input
+                        id="firstname"
+                        placeholder="Juan"
+                        required
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="lastname">Apellido</Label>
+                      <Input
+                        id="lastname"
+                        placeholder="Pérez"
+                        required
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="whatsapp">WhatsApp</Label>
+                    <Input
+                      id="whatsapp"
+                      placeholder="+593..."
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
+
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input

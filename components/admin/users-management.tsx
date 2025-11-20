@@ -34,12 +34,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { createBrowserClient } from '@/lib/supabase/client'
-import { Search, MoreHorizontal, User, Mail, Phone, Tv, Shield, Calendar, CreditCard, Key, Wifi, Bell, Send, Lock, RefreshCw, DollarSign, CheckSquare, Square, Trash2, History, XCircle, AlertTriangle, FileText, Save, Tag } from 'lucide-react'
+import { Search, MoreHorizontal, User, Mail, Phone, Tv, Shield, Calendar, CreditCard, Key, Wifi, Bell, Send, Lock, RefreshCw, DollarSign, CheckSquare, Square, Trash2, History, XCircle, AlertTriangle, FileText, Save, Tag, Plus } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { deleteUsers } from '@/app/actions/admin-actions'
+import { deleteUsers, createUser, updateUserPassword, createSubscription } from '@/app/actions/admin-actions'
 
 interface UserLog {
   id: string
@@ -135,6 +135,21 @@ export default function UsersManagement() {
 
   const [userInvoices, setUserInvoices] = useState<Invoice[]>([])
   const [loadingInvoices, setLoadingInvoices] = useState(false)
+
+  const [isCreateUserOpen, setIsCreateUserOpen] = useState(false)
+  const [createUserForm, setCreateUserForm] = useState({
+    email: '',
+    password: '',
+    first_name: '',
+    last_name: '',
+    whatsapp: '',
+    plan_id: '',
+    plan_name: '',
+    price: '',
+    iptv_username: '',
+    iptv_password: ''
+  })
+  const [manualPassword, setManualPassword] = useState('')
 
   const { toast } = useToast()
 
@@ -299,49 +314,230 @@ export default function UsersManagement() {
     setIsSubmitting(true)
     const supabase = createBrowserClient()
 
-    const updates = {
-      first_name: profileForm.first_name,
-      last_name: profileForm.last_name,
-      email: profileForm.email,
-      whatsapp: profileForm.whatsapp,
-      updated_at: new Date().toISOString()
-    }
-
     const { error } = await supabase
       .from('profiles')
-      .update(updates)
+      .update({
+        first_name: profileForm.first_name,
+        last_name: profileForm.last_name,
+        email: profileForm.email,
+        whatsapp: profileForm.whatsapp
+      })
       .eq('id', selectedUser.id)
 
     if (error) {
       toast({
         variant: 'destructive',
         title: 'Error al actualizar perfil',
+        description: error.message,
+      })
+    } else {
+      toast({
+        title: 'Perfil actualizado',
+        description: 'Los datos del usuario han sido actualizados correctamente.',
+      })
+      loadUsers()
+      logAction(selectedUser.id, 'UPDATE_PROFILE', { previous: selectedUser, new: profileForm })
+    }
+    setIsSubmitting(false)
+  }
+
+  const handleCreateUser = async () => {
+    if (!createUserForm.email || !createUserForm.password) {
+      toast({
+        variant: 'destructive',
+        title: 'Campos requeridos',
+        description: 'El email y la contraseña son obligatorios.',
+      })
+      return
+    }
+
+    setIsSubmitting(true)
+
+    // Buscar el nombre del plan si se seleccionó uno
+    let planName = ''
+    if (createUserForm.plan_id) {
+      const plan = availablePlans.find(p => p.id === createUserForm.plan_id)
+      if (plan) planName = plan.name
+    }
+
+    if (!createUserForm.email || !createUserForm.password) {
+      toast({
+        variant: 'destructive',
+        title: 'Campos requeridos',
+        description: 'Por favor ingresa email y contraseña.',
+      })
+      return
+    }
+
+    if (createUserForm.password.length < 6) {
+      toast({
+        variant: 'destructive',
+        title: 'Contraseña muy corta',
+        description: 'La contraseña debe tener al menos 6 caracteres.',
+      })
+      return
+    }
+
+    const result = await createUser({
+      ...createUserForm,
+      plan_name: planName
+    })
+
+    if (result.success) {
+      toast({
+        title: 'Usuario creado',
+        description: 'El usuario ha sido creado exitosamente.',
+      })
+      setIsCreateUserOpen(false)
+      setCreateUserForm({
+        email: '',
+        password: '',
+        first_name: '',
+        last_name: '',
+        whatsapp: '',
+        plan_id: '',
+        plan_name: '',
+        price: '',
+        iptv_username: '',
+        iptv_password: ''
+      })
+      loadUsers()
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Error al crear usuario',
+        description: result.error,
+      })
+    }
+    setIsSubmitting(false)
+  }
+
+
+  const handleUpdateSubscriptionDetails = async () => {
+    if (!selectedUser?.subscription?.id) return
+    setIsSubmitting(true)
+
+    const supabase = createBrowserClient()
+    const updates: any = {}
+    let hasChanges = false
+
+    // 1. Check Plan
+    if (planForm.plan_name && planForm.plan_name !== selectedUser.subscription.plan_name) {
+      const plan = availablePlans.find(p => p.name === planForm.plan_name)
+      if (plan) {
+        updates.plan_id = plan.id
+        updates.plan_name = plan.name
+        hasChanges = true
+      }
+    }
+
+    // 2. Check Price
+    if (priceForm.price && parseFloat(priceForm.price) !== selectedUser.subscription.price) {
+      updates.price = parseFloat(priceForm.price)
+      hasChanges = true
+    }
+
+    // 3. Check Date
+    if (billingDateForm.date) {
+      const newDate = new Date(billingDateForm.date)
+      const oldDate = new Date(selectedUser.subscription.next_billing_date)
+      // Compare just dates roughly or ISO strings
+      if (newDate.toISOString().split('T')[0] !== oldDate.toISOString().split('T')[0]) {
+        updates.next_billing_date = newDate.toISOString()
+        hasChanges = true
+      }
+    }
+
+    if (!hasChanges) {
+      setIsSubmitting(false)
+      return
+    }
+
+    updates.updated_at = new Date().toISOString()
+
+    const { error } = await supabase
+      .from('subscriptions')
+      .update(updates)
+      .eq('id', selectedUser.subscription.id)
+
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error al actualizar suscripción',
         description: error.message
       })
     } else {
       toast({
-        variant: 'success',
-        title: 'Perfil actualizado',
-        description: 'La información del cliente ha sido actualizada'
+        title: 'Suscripción actualizada',
+        description: 'Los detalles de la suscripción han sido guardados.'
       })
 
-      await logAction(selectedUser.id, 'update_profile', {
-        previous: {
-          first_name: selectedUser.first_name,
-          last_name: selectedUser.last_name,
-          email: selectedUser.email,
-          whatsapp: selectedUser.whatsapp
-        },
-        new: updates
-      })
+      // Update local state optimistically
+      const updatedUser = {
+        ...selectedUser,
+        subscription: {
+          ...selectedUser.subscription,
+          ...updates
+        }
+      }
+      setSelectedUser(updatedUser)
+      setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u))
+    }
+    setIsSubmitting(false)
+  }
 
-      // Update local state
-      setUsers(users.map(u =>
-        u.id === selectedUser.id
-          ? { ...u, ...updates }
-          : u
-      ))
-      setSelectedUser(prev => prev ? { ...prev, ...updates } : prev)
+  const handleCreateSubscription = async () => {
+    if (!selectedUser?.id || !planForm.plan_name) return
+
+    setIsSubmitting(true)
+    const selectedPlan = availablePlans.find(p => p.name === planForm.plan_name)
+
+    if (!selectedPlan) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Plan no válido' })
+      setIsSubmitting(false)
+      return
+    }
+
+    const result = await createSubscription({
+      user_id: selectedUser.id,
+      plan_id: selectedPlan.id,
+      plan_name: selectedPlan.name,
+      price: priceForm.price || selectedPlan.price
+    })
+
+    if (result.success) {
+      toast({ title: 'Suscripción creada exitosamente' })
+      loadUsers()
+      // Update local selected user to show the new subscription immediately would be ideal, 
+      // but loadUsers refreshes the list. We might need to re-fetch selectedUser or close modal.
+      // For now, let's close modal to force refresh when reopening or just rely on loadUsers if it updates the list view.
+      // Actually, let's try to update selectedUser manually if possible, or just let the user see it in the table.
+      setIsDetailsOpen(false)
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: result.error })
+    }
+    setIsSubmitting(false)
+  }
+
+  const handleManualPasswordUpdate = async () => {
+    if (!selectedUser?.id || !manualPassword) return
+
+    setIsSubmitting(true)
+    const result = await updateUserPassword(selectedUser.id, manualPassword)
+
+    if (result.success) {
+      toast({
+        title: 'Contraseña actualizada',
+        description: 'La contraseña del usuario ha sido cambiada exitosamente.',
+      })
+      setManualPassword('')
+      logAction(selectedUser.id, 'UPDATE_PASSWORD_MANUAL', { userId: selectedUser.id })
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: result.error,
+      })
     }
     setIsSubmitting(false)
   }
@@ -353,7 +549,7 @@ export default function UsersManagement() {
     const supabase = createBrowserClient()
 
     // Create a date object and set to end of day or keep as is, usually billing is just the date
-    // We'll use the date string and let it be 00:00 UTC or local depending on browser, 
+    // We'll use the date string and let it be 00:00 UTC or local depending on browser,
     // but to be safe let's append a time or just use ISO string of the date
     const newDate = new Date(billingDateForm.date)
 
@@ -962,6 +1158,8 @@ export default function UsersManagement() {
           return `Envió notificación: ${details.title}`
         case 'send_password_reset':
           return 'Envió correo de restablecimiento de contraseña'
+        case 'UPDATE_PASSWORD_MANUAL':
+          return 'Cambió contraseña manualmente'
         case 'receive_bulk_notification':
           return `Recibió notificación masiva (ID Lote: ${details.batch_id})`
         case 'bulk_delete':
@@ -1060,6 +1258,10 @@ export default function UsersManagement() {
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <Button onClick={() => setIsCreateUserOpen(true)} className="gap-2 w-full sm:w-auto">
+                  <User className="h-4 w-4" />
+                  Agregar Usuario
+                </Button>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-full sm:w-[160px] bg-background">
                     <SelectValue placeholder="Estado" />
@@ -1085,39 +1287,41 @@ export default function UsersManagement() {
               </div>
             </div>
 
-            {selectedIds.size > 0 && (
-              <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-background border shadow-xl rounded-full px-6 py-3 flex items-center gap-4 animate-in slide-in-from-bottom-4 duration-200">
-                <span className="text-sm font-medium flex items-center gap-2 border-r pr-4">
-                  <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                    {selectedIds.size}
+            {
+              selectedIds.size > 0 && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-background border shadow-xl rounded-full px-6 py-3 flex items-center gap-4 animate-in slide-in-from-bottom-4 duration-200">
+                  <span className="text-sm font-medium flex items-center gap-2 border-r pr-4">
+                    <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                      {selectedIds.size}
+                    </div>
+                    seleccionados
+                  </span>
+                  <div className="flex gap-2 items-center">
+                    <Button size="sm" variant="ghost" onClick={() => setIsBulkPlanOpen(true)} title="Cambiar Plan">
+                      <CreditCard className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setIsBulkStatusOpen(true)} title="Cambiar Estado">
+                      <RefreshCw className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setIsBulkDateOpen(true)} title="Cambiar Fecha">
+                      <Calendar className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setIsBulkNotifyOpen(true)} title="Enviar Notificación">
+                      <Bell className="h-4 w-4" />
+                    </Button>
+                    <div className="h-4 w-px bg-border mx-1" />
+                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setIsBulkDeleteOpen(true)} title="Eliminar">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+                      <XCircle className="h-4 w-4" />
+                    </Button>
                   </div>
-                  seleccionados
-                </span>
-                <div className="flex gap-2 items-center">
-                  <Button size="sm" variant="ghost" onClick={() => setIsBulkPlanOpen(true)} title="Cambiar Plan">
-                    <CreditCard className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setIsBulkStatusOpen(true)} title="Cambiar Estado">
-                    <RefreshCw className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setIsBulkDateOpen(true)} title="Cambiar Fecha">
-                    <Calendar className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setIsBulkNotifyOpen(true)} title="Enviar Notificación">
-                    <Bell className="h-4 w-4" />
-                  </Button>
-                  <div className="h-4 w-px bg-border mx-1" />
-                  <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setIsBulkDeleteOpen(true)} title="Eliminar">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
-                    <XCircle className="h-4 w-4" />
-                  </Button>
                 </div>
-              </div>
-            )}
+              )
+            }
 
-            <CardContent className="p-0">
+            < CardContent className="p-0" >
               <div className="overflow-x-auto">
                 <Table className="w-full min-w-[1000px]">
                   <TableHeader>
@@ -1250,13 +1454,13 @@ export default function UsersManagement() {
                   </TableBody>
                 </Table>
               </div>
-            </CardContent>
-          </Card>
+            </CardContent >
+          </Card >
         </>
       )}
 
       <Dialog open={isBulkNotifyOpen} onOpenChange={setIsBulkNotifyOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[90vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Enviar Notificación Masiva</DialogTitle>
             <DialogDescription>
@@ -1308,7 +1512,7 @@ export default function UsersManagement() {
       </Dialog>
 
       <Dialog open={isBulkPlanOpen} onOpenChange={setIsBulkPlanOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[90vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Cambiar Plan Masivamente</DialogTitle>
             <DialogDescription>
@@ -1340,7 +1544,7 @@ export default function UsersManagement() {
       </Dialog>
 
       <Dialog open={isBulkStatusOpen} onOpenChange={setIsBulkStatusOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[90vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Cambiar Estado Masivamente</DialogTitle>
             <DialogDescription>
@@ -1372,7 +1576,7 @@ export default function UsersManagement() {
       </Dialog>
 
       <Dialog open={isBulkDateOpen} onOpenChange={setIsBulkDateOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[90vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Cambiar Fecha de Facturación Masivamente</DialogTitle>
             <DialogDescription>
@@ -1427,263 +1631,355 @@ export default function UsersManagement() {
 
           {selectedUser && (
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-              <TabsList className="grid w-full grid-cols-4 h-auto mx-6 mt-4">
-                <TabsTrigger value="details" className="text-xs sm:text-sm py-2">Detalles</TabsTrigger>
-                <TabsTrigger value="billing" className="text-xs sm:text-sm py-2">Facturación</TabsTrigger>
-                <TabsTrigger value="communications" className="text-xs sm:text-sm py-2">Comunicación</TabsTrigger>
-                <TabsTrigger value="history" className="text-xs sm:text-sm py-2">Historial</TabsTrigger>
-              </TabsList>
+              <div className="px-6 pt-4 pb-2">
+                <div className="overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 md:pb-0">
+                  <TabsList className="inline-flex h-auto w-auto p-1 min-w-full md:grid md:w-full md:grid-cols-4 gap-2">
+                    <TabsTrigger value="details" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Detalles</TabsTrigger>
+                    <TabsTrigger value="billing" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Facturación</TabsTrigger>
+                    <TabsTrigger value="communications" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Comunicación</TabsTrigger>
+                    <TabsTrigger value="history" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Historial</TabsTrigger>
+                  </TabsList>
+                </div>
+              </div>
 
-              <TabsContent value="details" className="flex-1 overflow-y-auto px-6 py-4 space-y-6 mt-0">
-                <div className="grid gap-6 lg:grid-cols-2">
-                  {/* Personal Info */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
-                      <User className="h-4 w-4" /> Información Personal
-                    </h3>
-                    <Card className="bg-muted/30 h-full">
-                      <CardContent className="p-4 space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="first-name" className="text-sm font-medium">Nombre</Label>
-                          <Input
-                            id="first-name"
-                            value={profileForm.first_name}
-                            onChange={(e) => setProfileForm({ ...profileForm, first_name: e.target.value })}
-                            className="h-9 bg-background"
-                            placeholder="Nombre del cliente"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="last-name" className="text-sm font-medium">Apellido</Label>
-                          <Input
-                            id="last-name"
-                            value={profileForm.last_name}
-                            onChange={(e) => setProfileForm({ ...profileForm, last_name: e.target.value })}
-                            className="h-9 bg-background"
-                            placeholder="Apellido del cliente"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            value={profileForm.email}
-                            onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                            className="h-9 bg-background"
-                            placeholder="correo@ejemplo.com"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="whatsapp" className="text-sm font-medium">WhatsApp</Label>
-                          <Input
-                            id="whatsapp"
-                            value={profileForm.whatsapp}
-                            onChange={(e) => setProfileForm({ ...profileForm, whatsapp: e.target.value })}
-                            className="h-9 bg-background"
-                            placeholder="+51 999 999 999"
-                          />
-                        </div>
-                        <div className="pt-2 border-t space-y-2">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-muted-foreground">Rol:</span>
-                            <Badge variant="outline" className="capitalize">{selectedUser.role}</Badge>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-muted-foreground">Registro:</span>
-                            <span className="font-medium">
-                              {selectedUser.created_at ? format(new Date(selectedUser.created_at), 'dd/MM/yyyy', { locale: es }) : '-'}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="pt-2">
-                          <Button onClick={handleUpdateProfile} disabled={isSubmitting} className="w-full" size="sm">
-                            <Save className="mr-2 h-4 w-4" /> Guardar Información Personal
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Subscription Info */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
-                      <CreditCard className="h-4 w-4" /> Suscripción Actual
-                    </h3>
-                    <Card className="bg-muted/30 h-full">
-                      <CardContent className="p-4 space-y-4">
-                        {selectedUser.subscription ? (
-                          <>
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">Plan</Label>
-                              <div className="flex gap-2">
-                                <Select
-                                  value={planForm.plan_name}
-                                  onValueChange={(val) => setPlanForm({ plan_name: val })}
-                                >
-                                  <SelectTrigger className="h-9 flex-1 bg-background">
-                                    <SelectValue placeholder="Seleccionar plan" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {availablePlans.map(plan => (
-                                      <SelectItem key={plan.id} value={plan.name}>{plan.name}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Button size="sm" onClick={handleUpdatePlan} disabled={isSubmitting || planForm.plan_name === selectedUser.subscription.plan_name} className="h-9">
-                                  Aplicar
-                                </Button>
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">Precio Mensual</Label>
-                              <div className="flex gap-2">
-                                <div className="relative flex-1">
-                                  <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-                                  <Input
-                                    type="number"
-                                    step="0.01"
-                                    value={priceForm.price}
-                                    onChange={(e) => setPriceForm({ price: e.target.value })}
-                                    className="h-9 pl-7 bg-background"
-                                  />
-                                </div>
-                                <Button size="sm" onClick={handleUpdatePrice} disabled={isSubmitting} className="h-9 px-4">
-                                  Guardar
-                                </Button>
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">Próximo Pago</Label>
-                              <div className="flex gap-2">
-                                <Input
-                                  type="date"
-                                  value={billingDateForm.date}
-                                  onChange={(e) => setBillingDateForm({ date: e.target.value })}
-                                  className="h-9 flex-1 bg-background"
-                                />
-                                <Button size="sm" onClick={handleUpdateBillingDate} disabled={isSubmitting} className="h-9 px-4">
-                                  Guardar
-                                </Button>
-                              </div>
-                            </div>
-
-                            <div className="pt-3 border-t space-y-2">
-                              <Label className="text-sm font-medium">Estado de Suscripción</Label>
-                              <div className="flex flex-wrap gap-2">
-                                <Button
-                                  size="sm"
-                                  variant={selectedUser.subscription.status === 'active' ? 'default' : 'outline'}
-                                  className={`h-8 flex-1 ${selectedUser.subscription.status === 'active' ? 'bg-green-600 hover:bg-green-700' : 'text-green-600 border-green-200 hover:bg-green-50'}`}
-                                  onClick={() => handleUpdateStatus('active')}
-                                  disabled={isSubmitting}
-                                >
-                                  Activo
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant={selectedUser.subscription.status === 'inactive' ? 'default' : 'outline'}
-                                  className={`h-8 flex-1 ${selectedUser.subscription.status === 'inactive' ? 'bg-yellow-600 hover:bg-yellow-700' : 'text-yellow-600 border-yellow-200 hover:bg-yellow-50'}`}
-                                  onClick={() => handleUpdateStatus('inactive')}
-                                  disabled={isSubmitting}
-                                >
-                                  Inactivo
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant={selectedUser.subscription.status === 'cancelled' ? 'default' : 'outline'}
-                                  className={`h-8 flex-1 ${selectedUser.subscription.status === 'cancelled' ? 'bg-red-600 hover:bg-red-700' : 'text-red-600 border-red-200 hover:bg-red-50'}`}
-                                  onClick={() => handleUpdateStatus('cancelled')}
-                                  disabled={isSubmitting}
-                                >
-                                  Cancelado
-                                </Button>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="text-center py-8 text-muted-foreground">
-                            <CreditCard className="h-8 w-8 mx-auto mb-2 opacity-20" />
-                            <p className="text-sm">El usuario no tiene una suscripción activa</p>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* IPTV Credentials */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
-                      <Tv className="h-4 w-4" /> Credenciales IPTV
-                    </h3>
-                    <Card className="bg-muted/30 h-full">
-                      <CardContent className="p-4 space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium">Usuario IPTV</Label>
-                          <Input
-                            value={iptvForm.username}
-                            onChange={(e) => setIptvForm({ ...iptvForm, username: e.target.value })}
-                            className="bg-background"
-                            placeholder="Usuario del servicio"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium">Contraseña IPTV</Label>
-                          <div className="flex gap-2">
+              <TabsContent value="details" className="flex-1 overflow-y-auto px-6 py-4 mt-0">
+                <div className="grid gap-6 md:grid-cols-2 pb-6">
+                  {/* Left Column */}
+                  <div className="flex flex-col gap-6">
+                    {/* Personal Info */}
+                    <div className="flex flex-col gap-4">
+                      <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
+                        <User className="h-4 w-4" /> Información Personal
+                      </h3>
+                      <Card className="bg-muted/30">
+                        <CardContent className="p-4 space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="first-name" className="text-sm font-medium">Nombre</Label>
                             <Input
-                              value={iptvForm.password}
-                              onChange={(e) => setIptvForm({ ...iptvForm, password: e.target.value })}
-                              className="bg-background"
-                              placeholder="Contraseña del servicio"
+                              id="first-name"
+                              value={profileForm.first_name}
+                              onChange={(e) => setProfileForm({ ...profileForm, first_name: e.target.value })}
+                              className="h-9 bg-background"
+                              placeholder="Nombre del cliente"
                             />
-                            <Button variant="outline" size="icon" onClick={() => setIptvForm({ ...iptvForm, password: 'Temp' + Math.random().toString(36).slice(-8) })}>
-                              <RefreshCw className="h-4 w-4" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="last-name" className="text-sm font-medium">Apellido</Label>
+                            <Input
+                              id="last-name"
+                              value={profileForm.last_name}
+                              onChange={(e) => setProfileForm({ ...profileForm, last_name: e.target.value })}
+                              className="h-9 bg-background"
+                              placeholder="Apellido del cliente"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              value={profileForm.email}
+                              onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                              className="h-9 bg-background"
+                              placeholder="correo@ejemplo.com"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="whatsapp" className="text-sm font-medium">WhatsApp</Label>
+                            <Input
+                              id="whatsapp"
+                              value={profileForm.whatsapp}
+                              onChange={(e) => setProfileForm({ ...profileForm, whatsapp: e.target.value })}
+                              className="h-9 bg-background"
+                              placeholder="+51 999 999 999"
+                            />
+                          </div>
+                          <div className="pt-2 border-t space-y-2">
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-muted-foreground">Rol:</span>
+                              <Badge variant="outline" className="capitalize">{selectedUser.role}</Badge>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-muted-foreground">Registro:</span>
+                              <span className="font-medium">
+                                {selectedUser.created_at ? format(new Date(selectedUser.created_at), 'dd/MM/yyyy', { locale: es }) : '-'}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="pt-2">
+                            <Button onClick={handleUpdateProfile} disabled={isSubmitting} className="w-full" size="sm">
+                              <Save className="mr-2 h-4 w-4" /> Guardar Información Personal
                             </Button>
                           </div>
-                        </div>
-                        <div className="pt-2">
-                          <Button onClick={handleUpdateIptvCredentials} disabled={isSubmitting} className="w-full" size="sm">
-                            <Save className="mr-2 h-4 w-4" /> Actualizar Credenciales
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* IPTV Credentials */}
+                    <div className="flex flex-col gap-4">
+                      <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
+                        <Tv className="h-4 w-4" /> Credenciales IPTV
+                      </h3>
+                      <Card className="bg-muted/30">
+                        <CardContent className="p-4 space-y-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Usuario IPTV</Label>
+                            <Input
+                              value={iptvForm.username}
+                              onChange={(e) => setIptvForm({ ...iptvForm, username: e.target.value })}
+                              className="bg-background"
+                              placeholder="Usuario del servicio"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Contraseña IPTV</Label>
+                            <div className="flex gap-2">
+                              <Input
+                                value={iptvForm.password}
+                                onChange={(e) => setIptvForm({ ...iptvForm, password: e.target.value })}
+                                className="bg-background"
+                                placeholder="Contraseña del servicio"
+                              />
+                              <Button variant="outline" size="icon" onClick={() => setIptvForm({ ...iptvForm, password: 'Temp' + Math.random().toString(36).slice(-8) })}>
+                                <RefreshCw className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="pt-2">
+                            <Button onClick={handleUpdateIptvCredentials} disabled={isSubmitting} className="w-full" size="sm">
+                              <Save className="mr-2 h-4 w-4" /> Actualizar Credenciales
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
 
-                  {/* Security */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
-                      <Lock className="h-4 w-4" /> Seguridad de la Cuenta
-                    </h3>
-                    <Card className="bg-muted/30 h-full">
-                      <CardContent className="p-4 space-y-4">
-                        <div className="flex items-center justify-between p-3 border rounded-lg bg-background">
-                          <div className="space-y-1">
-                            <h4 className="font-medium text-sm">Restablecer Contraseña</h4>
-                            <p className="text-xs text-muted-foreground">
-                              Envía correo para nueva contraseña.
-                            </p>
-                          </div>
-                          <Button onClick={handleSendPasswordReset} disabled={isSubmitting} size="sm" variant="outline">
-                            <Mail className="mr-2 h-3 w-3" /> Enviar
-                          </Button>
-                        </div>
+                  {/* Right Column */}
+                  <div className="flex flex-col gap-6">
+                    {/* Subscription Info */}
+                    <div className="flex flex-col gap-4">
+                      <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
+                        <CreditCard className="h-4 w-4" /> Suscripción Actual
+                      </h3>
+                      <Card className="bg-muted/30">
+                        <CardContent className="p-4 space-y-4">
+                          {selectedUser.subscription ? (
+                            <>
+                              <div className="grid gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium">Plan</Label>
+                                    <Select
+                                      value={planForm.plan_name}
+                                      onValueChange={(val) => setPlanForm({ plan_name: val })}
+                                    >
+                                      <SelectTrigger className="h-9 bg-background">
+                                        <SelectValue placeholder="Seleccionar plan" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {availablePlans.map(plan => (
+                                          <SelectItem key={plan.id} value={plan.name}>{plan.name}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
 
-                        <div className="flex items-center justify-between p-3 border rounded-lg bg-red-50 border-red-100">
-                          <div className="space-y-1">
-                            <h4 className="font-medium text-sm text-red-700">Zona de Peligro</h4>
-                            <p className="text-xs text-red-600/80">
-                              Acciones críticas de cuenta.
-                            </p>
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium">Precio Mensual</Label>
+                                    <div className="relative">
+                                      <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                                      <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={priceForm.price}
+                                        onChange={(e) => setPriceForm({ price: e.target.value })}
+                                        className="h-9 pl-7 bg-background"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                  <Label className="text-sm font-medium">Próximo Pago</Label>
+                                  <Input
+                                    type="date"
+                                    value={billingDateForm.date}
+                                    onChange={(e) => setBillingDateForm({ date: e.target.value })}
+                                    className="h-9 bg-background"
+                                  />
+                                </div>
+
+                                <Button
+                                  onClick={handleUpdateSubscriptionDetails}
+                                  disabled={isSubmitting}
+                                  className="w-full"
+                                  size="sm"
+                                >
+                                  <Save className="mr-2 h-4 w-4" /> Guardar Cambios de Suscripción
+                                </Button>
+                              </div>
+
+                              <div className="pt-3 border-t space-y-2">
+                                <Label className="text-sm font-medium">Estado de Suscripción</Label>
+                                <div className="flex flex-wrap gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant={selectedUser.subscription.status === 'active' ? 'default' : 'outline'}
+                                    className={`h-8 flex-1 ${selectedUser.subscription.status === 'active' ? 'bg-green-600 hover:bg-green-700' : 'text-green-600 border-green-200 hover:bg-green-50'}`}
+                                    onClick={() => handleUpdateStatus('active')}
+                                    disabled={isSubmitting}
+                                  >
+                                    Activo
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant={selectedUser.subscription.status === 'inactive' ? 'default' : 'outline'}
+                                    className={`h-8 flex-1 ${selectedUser.subscription.status === 'inactive' ? 'bg-yellow-600 hover:bg-yellow-700' : 'text-yellow-600 border-yellow-200 hover:bg-yellow-50'}`}
+                                    onClick={() => handleUpdateStatus('inactive')}
+                                    disabled={isSubmitting}
+                                  >
+                                    Inactivo
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant={selectedUser.subscription.status === 'cancelled' ? 'default' : 'outline'}
+                                    className={`h-8 flex-1 ${selectedUser.subscription.status === 'cancelled' ? 'bg-red-600 hover:bg-red-700' : 'text-red-600 border-red-200 hover:bg-red-50'}`}
+                                    onClick={() => handleUpdateStatus('cancelled')}
+                                    disabled={isSubmitting}
+                                  >
+                                    Cancelado
+                                  </Button>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="space-y-4">
+                              <div className="text-center py-4 text-muted-foreground border-b mb-4">
+                                <CreditCard className="h-8 w-8 mx-auto mb-2 opacity-20" />
+                                <p className="text-sm">El usuario no tiene una suscripción activa</p>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium">Agregar Suscripción Manual</Label>
+                                <div className="grid gap-4">
+                                  <div className="space-y-2">
+                                    <Label className="text-xs text-muted-foreground">Plan</Label>
+                                    <Select
+                                      value={planForm.plan_name}
+                                      onValueChange={(val) => {
+                                        const plan = availablePlans.find(p => p.name === val)
+                                        setPlanForm({ plan_name: val })
+                                        if (plan) setPriceForm({ price: plan.price.toString() })
+                                      }}
+                                    >
+                                      <SelectTrigger className="h-9 bg-background">
+                                        <SelectValue placeholder="Seleccionar plan" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {availablePlans.map(plan => (
+                                          <SelectItem key={plan.id} value={plan.name}>{plan.name} - ${plan.price}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label className="text-xs text-muted-foreground">Precio Acordado</Label>
+                                    <div className="relative">
+                                      <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                                      <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={priceForm.price}
+                                        onChange={(e) => setPriceForm({ price: e.target.value })}
+                                        className="h-9 pl-7 bg-background"
+                                        placeholder="0.00"
+                                      />
+                                    </div>
+                                  </div>
+                                  <Button
+                                    onClick={handleCreateSubscription}
+                                    disabled={isSubmitting || !planForm.plan_name}
+                                    className="w-full"
+                                  >
+                                    <Plus className="mr-2 h-4 w-4" /> Crear Suscripción
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Security */}
+                    <div className="flex flex-col gap-4">
+                      <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
+                        <Lock className="h-4 w-4" /> Seguridad de la Cuenta
+                      </h3>
+                      <Card className="bg-muted/30">
+                        <CardContent className="p-4 space-y-4">
+                          <div className="flex items-center justify-between p-3 border rounded-lg bg-background">
+                            <div className="space-y-1">
+                              <h4 className="font-medium text-sm">Restablecer Contraseña</h4>
+                              <p className="text-xs text-muted-foreground">
+                                Envía correo para nueva contraseña.
+                              </p>
+                            </div>
+                            <Button onClick={handleSendPasswordReset} disabled={isSubmitting} size="sm" variant="outline">
+                              <Mail className="mr-2 h-3 w-3" /> Enviar
+                            </Button>
                           </div>
-                          <Button variant="destructive" size="sm">
-                            <Shield className="mr-2 h-3 w-3" /> Suspender
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+
+                          <div className="space-y-3 p-3 border rounded-lg bg-background">
+                            <div className="space-y-1">
+                              <h4 className="font-medium text-sm">Cambio Manual de Contraseña</h4>
+                              <p className="text-xs text-muted-foreground">
+                                Establece una nueva contraseña directamente.
+                              </p>
+                            </div>
+                            <div className="flex gap-2">
+                              <Input
+                                type="text"
+                                placeholder="Nueva contraseña"
+                                value={manualPassword}
+                                onChange={(e) => setManualPassword(e.target.value)}
+                                className="h-9 text-sm"
+                              />
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-9 w-9 shrink-0"
+                                onClick={() => setManualPassword(Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8))}
+                                title="Generar aleatoria"
+                              >
+                                <RefreshCw className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <Button
+                              onClick={handleManualPasswordUpdate}
+                              disabled={isSubmitting || !manualPassword}
+                              className="w-full"
+                              size="sm"
+                            >
+                              <Save className="mr-2 h-4 w-4" /> Guardar Nueva Contraseña
+                            </Button>
+                          </div>
+
+                          <div className="flex items-center justify-between p-3 border rounded-lg bg-red-50 border-red-100">
+                            <div className="space-y-1">
+                              <h4 className="font-medium text-sm text-red-700">Zona de Peligro</h4>
+                              <p className="text-xs text-red-600/80">
+                                Acciones críticas de cuenta.
+                              </p>
+                            </div>
+                            <Button variant="destructive" size="sm">
+                              <Shield className="mr-2 h-3 w-3" /> Suspender
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 </div>
               </TabsContent>
@@ -2003,7 +2299,7 @@ export default function UsersManagement() {
                                       </Badge>
                                     </TableCell>
                                     <TableCell className="max-w-[300px]">
-                                      <div className="text-sm break-words" title={JSON.stringify(log.details)}>
+                                      <div className="text-sm break-all whitespace-normal" title={JSON.stringify(log.details)}>
                                         {formatLogDetails(log.action, log.details)}
                                       </div>
                                     </TableCell>
@@ -2029,6 +2325,151 @@ export default function UsersManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div >
+      <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
+            <DialogDescription>
+              Crea un nuevo usuario manualmente. Se creará la cuenta de acceso y opcionalmente la suscripción.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-6 py-4">
+            <div className="grid gap-4">
+              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Credenciales de Acceso (Obligatorio)</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-email">Email <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="new-email"
+                    type="email"
+                    placeholder="cliente@ejemplo.com"
+                    value={createUserForm.email}
+                    onChange={(e) => setCreateUserForm({ ...createUserForm, email: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">Contraseña <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="new-password"
+                    type="text"
+                    placeholder="Contraseña segura"
+                    value={createUserForm.password}
+                    onChange={(e) => setCreateUserForm({ ...createUserForm, password: e.target.value })}
+                    required
+                  />
+                  <p className="text-[10px] text-muted-foreground">Mínimo 6 caracteres</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Información Personal</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-firstname">Nombre</Label>
+                  <Input
+                    id="new-firstname"
+                    placeholder="Juan"
+                    value={createUserForm.first_name}
+                    onChange={(e) => setCreateUserForm({ ...createUserForm, first_name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-lastname">Apellido</Label>
+                  <Input
+                    id="new-lastname"
+                    placeholder="Pérez"
+                    value={createUserForm.last_name}
+                    onChange={(e) => setCreateUserForm({ ...createUserForm, last_name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-whatsapp">WhatsApp</Label>
+                  <Input
+                    id="new-whatsapp"
+                    placeholder="+593..."
+                    value={createUserForm.whatsapp}
+                    onChange={(e) => setCreateUserForm({ ...createUserForm, whatsapp: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Suscripción Inicial (Opcional)</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Plan</Label>
+                  <Select
+                    value={createUserForm.plan_id}
+                    onValueChange={(val) => {
+                      const plan = availablePlans.find(p => p.id === val)
+                      setCreateUserForm({
+                        ...createUserForm,
+                        plan_id: val,
+                        price: plan ? plan.price.toString() : ''
+                      })
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar plan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availablePlans.map(plan => (
+                        <SelectItem key={plan.id} value={plan.id}>{plan.name} - ${plan.price}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-price">Precio Acordado</Label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="new-price"
+                      className="pl-9"
+                      placeholder="0.00"
+                      value={createUserForm.price}
+                      onChange={(e) => setCreateUserForm({ ...createUserForm, price: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <h3 className="text-sm font-medium text-muted-foreground border-b pb-2">Credenciales IPTV (Opcional)</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-iptv-user">Usuario IPTV</Label>
+                  <Input
+                    id="new-iptv-user"
+                    placeholder="user123"
+                    value={createUserForm.iptv_username}
+                    onChange={(e) => setCreateUserForm({ ...createUserForm, iptv_username: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-iptv-pass">Contraseña IPTV</Label>
+                  <Input
+                    id="new-iptv-pass"
+                    placeholder="pass123"
+                    value={createUserForm.iptv_password}
+                    onChange={(e) => setCreateUserForm({ ...createUserForm, iptv_password: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateUserOpen(false)}>Cancelar</Button>
+            <Button onClick={handleCreateUser} disabled={isSubmitting}>
+              {isSubmitting ? 'Creando...' : 'Crear Usuario'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }

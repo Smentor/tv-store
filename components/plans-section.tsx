@@ -37,7 +37,7 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null)
   const [activePromotions, setActivePromotions] = useState<any[]>([])
   const [loadingCoupon, setLoadingCoupon] = useState(false)
-  
+
   const { subscription, refetch } = useSubscription()
   const { plans, loading: loadingPlans } = usePlans()
   const { toast } = useToast()
@@ -51,14 +51,14 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
   const loadActivePromotions = async () => {
     const supabase = createClient()
     const now = new Date().toISOString()
-    
+
     const { data, error } = await supabase
       .from('promotions')
       .select('*')
       .eq('active', true)
       .or(`start_date.is.null,start_date.lte.${now}`)
       .or(`end_date.is.null,end_date.gte.${now}`)
-    
+
     if (!error && data) {
       setActivePromotions(data)
     }
@@ -78,14 +78,14 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
     setLoadingCoupon(true)
     const supabase = createClient()
     const now = new Date().toISOString()
-    
+
     const { data, error } = await supabase
       .from('coupons')
       .select('*')
       .eq('code', couponCode.toUpperCase())
       .eq('active', true)
       .single()
-    
+
     if (error || !data) {
       toast({
         title: "Cupón inválido",
@@ -303,15 +303,15 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
             />
           </div>
           {!appliedCoupon ? (
-            <Button 
-              onClick={applyCoupon} 
+            <Button
+              onClick={applyCoupon}
               disabled={loadingCoupon || !couponCode.trim()}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               {loadingCoupon ? "Validando..." : "Aplicar Cupón"}
             </Button>
           ) : (
-            <Button 
+            <Button
               onClick={() => {
                 setAppliedCoupon(null)
                 setCouponCode("")
@@ -336,7 +336,7 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
         )}
       </Card>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {plans.map((plan) => {
           const Icon = PLAN_ICONS[plan.id] || Zap
           const isCurrent = currentPlanId === plan.id
@@ -348,80 +348,83 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
           return (
             <Card
               key={plan.id}
-              className={`relative overflow-hidden transition-all duration-300 ${
-                isCurrent 
-                  ? "border-2 border-primary shadow-2xl shadow-primary/30 sm:scale-105" 
-                  : "border border-border hover:border-accent/50 hover:shadow-lg"
-              }`}
+              className={`relative overflow-hidden transition-all duration-300 flex flex-col ${isCurrent
+                  ? "border-2 border-primary shadow-lg"
+                  : "border border-border hover:border-primary/50 hover:shadow-md"
+                }`}
             >
               {isCurrent && (
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-primary via-accent to-primary text-white px-3 py-2 text-center font-bold text-xs sm:text-sm animate-gradient">
-                  <Check className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1 sm:mr-2" />
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-primary to-accent text-white px-3 py-1.5 text-center font-semibold text-xs">
+                  <Check className="w-3 h-3 inline mr-1" />
                   TU PLAN ACTUAL
                 </div>
               )}
 
-              <div className={`p-4 sm:p-6 space-y-4 sm:space-y-5 ${isCurrent ? "pt-12 sm:pt-14" : "pt-4 sm:pt-6"}`}>
-                <div className="space-y-3">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center ${
-                    isCurrent ? "bg-primary/20 ring-2 ring-primary/50" : "bg-muted"
-                  }`}>
-                    <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isCurrent ? "text-primary" : "text-foreground"}`} />
+              <div className={`p-5 flex flex-col flex-1 ${isCurrent ? "pt-10" : ""}`}>
+                {/* Header */}
+                <div className="flex items-start gap-3 mb-4">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isCurrent ? "bg-primary/10" : "bg-muted"
+                    }`}>
+                    <Icon className={`w-5 h-5 ${isCurrent ? "text-primary" : "text-muted-foreground"}`} />
                   </div>
-                  
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-1">{plan.name}</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{plan.description}</p>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-foreground mb-0.5 truncate">{plan.name}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{plan.description}</p>
                   </div>
                 </div>
 
-                <div className="border-y border-border py-3">
+                {/* Pricing */}
+                <div className="mb-4 pb-4 border-b">
                   {hasDiscount ? (
-                    <div>
-                      <div className="flex items-baseline gap-1 line-through text-muted-foreground opacity-60">
-                        <span className="text-2xl font-bold">${originalPrice}</span>
-                        <span className="text-base">/mes</span>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground line-through">${originalPrice}</span>
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">
+                          -{((originalPrice - finalPrice) / originalPrice * 100).toFixed(0)}%
+                        </span>
                       </div>
                       <div className="flex items-baseline gap-1">
-                        <span className="text-3xl sm:text-4xl font-bold text-green-600">${finalPrice.toFixed(2)}</span>
-                        <span className="text-green-600 text-base sm:text-lg">/mes</span>
-                      </div>
-                      <div className="text-xs text-green-600 font-semibold mt-1">
-                        ¡Ahorra ${(originalPrice - finalPrice).toFixed(2)}!
+                        <span className="text-3xl font-bold text-green-600">${finalPrice.toFixed(2)}</span>
+                        <span className="text-sm text-green-600">/mes</span>
                       </div>
                     </div>
                   ) : (
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl sm:text-4xl font-bold text-foreground">${plan.price}</span>
-                      <span className="text-muted-foreground text-base sm:text-lg">/mes</span>
+                      <span className="text-3xl font-bold text-foreground">${plan.price}</span>
+                      <span className="text-sm text-muted-foreground">/mes</span>
                     </div>
                   )}
                 </div>
 
-                <ul className="space-y-2 sm:space-y-3">
-                  {features.map((feature: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-2 text-xs sm:text-sm">
-                      <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
-                        isCurrent ? "text-primary" : "text-accent"
-                      }`} />
-                      <span className="text-foreground leading-relaxed">{feature}</span>
+                {/* Features */}
+                <ul className="space-y-2 mb-5 flex-1">
+                  {features.slice(0, 6).map((feature: string, idx: number) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm">
+                      <Check className={`w-4 h-4 shrink-0 mt-0.5 ${isCurrent ? "text-primary" : "text-green-600"
+                        }`} />
+                      <span className="text-foreground/90 leading-tight">{feature}</span>
                     </li>
                   ))}
+                  {features.length > 6 && (
+                    <li className="text-xs text-muted-foreground italic pl-6">
+                      +{features.length - 6} características más
+                    </li>
+                  )}
                 </ul>
 
+                {/* Button */}
                 <Button
                   onClick={() => handlePlanChange(plan.id)}
                   disabled={isProcessing || isCurrent}
-                  size="lg"
-                  className={`w-full font-semibold text-sm sm:text-base transition-all ${
-                    isCurrent
-                      ? "bg-gradient-to-r from-primary to-accent text-white cursor-default opacity-90"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105"
-                  }`}
+                  className={`w-full ${isCurrent
+                      ? "bg-gradient-to-r from-primary to-accent text-white cursor-default"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                    }`}
                 >
                   {isCurrent ? (
                     <>
-                      <Check className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                      <Check className="w-4 h-4 mr-2" />
                       Plan Activo
                     </>
                   ) : (
@@ -456,7 +459,7 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
                   const originalPrice = plan.price
                   const finalPrice = calculateFinalPrice(originalPrice)
                   const hasDiscount = finalPrice < originalPrice
-                  
+
                   return (
                     <>
                       {hasDiscount && (
@@ -501,7 +504,7 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
               </p>
             </div>
           </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-3 sm:gap-3 flex-col sm:flex-row">
             <Button
               type="button"
               variant="outline"
@@ -510,7 +513,7 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
                 setSelectedPlan(null)
               }}
               disabled={isProcessing}
-              className="flex-1"
+              className="w-full sm:flex-1"
             >
               <X className="w-4 h-4 mr-2" />
               Cancelar
@@ -519,7 +522,7 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
               type="button"
               onClick={confirmPlanChange}
               disabled={isProcessing}
-              className="flex-1 bg-gradient-to-r from-primary to-accent text-white hover:from-primary/90 hover:to-accent/90"
+              className="w-full sm:flex-1 bg-gradient-to-r from-primary to-accent text-white hover:from-primary/90 hover:to-accent/90"
             >
               {isProcessing ? (
                 "Procesando..."

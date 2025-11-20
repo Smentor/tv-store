@@ -14,6 +14,51 @@
       },
       "exportedName": "deleteUsers",
       "filename": "iptv/app/actions/admin-actions.ts"
+    },
+    "40c088d894e31615d9e0988719ee5b15b073856c07": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createUser",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "createUser",
+      "filename": "iptv/app/actions/admin-actions.ts"
+    },
+    "60857e9a2208ac027c8b6bf46806efc59e148114e5": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateUserPassword",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "updateUserPassword",
+      "filename": "iptv/app/actions/admin-actions.ts"
+    },
+    "406818131b6f3e4ce9e3d9d10335154be68436dde8": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createSubscription",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "createSubscription",
+      "filename": "iptv/app/actions/admin-actions.ts"
     }
   },
   "edge": {}

@@ -1,0 +1,20 @@
+{
+  "node": {
+    "40a15500937badc253a416b685bb0c413bf92444d8": {
+      "workers": {
+        "app/auth/sign-up/page": {
+          "moduleId": "[project]/iptv/.next-internal/server/app/auth/sign-up/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/auth-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "registerUser",
+          "filename": "iptv/app/actions/auth-actions.ts"
+        }
+      },
+      "layer": {
+        "app/auth/sign-up/page": "action-browser"
+      },
+      "exportedName": "registerUser",
+      "filename": "iptv/app/actions/auth-actions.ts"
+    }
+  },
+  "edge": {}
+}

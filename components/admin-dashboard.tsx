@@ -25,16 +25,16 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Panel de Administración
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-sm md:text-base text-muted-foreground mt-1 md:mt-2">
               Gestiona paquetes, promociones, cupones y usuarios de tu servicio IPTV
             </p>
           </div>
-          <Button variant="outline" onClick={handleLogout} className="gap-2">
+          <Button variant="outline" onClick={handleLogout} className="gap-2 w-full md:w-auto">
             <LogOut className="h-4 w-4" />
             Cerrar Sesión
           </Button>
@@ -42,28 +42,30 @@ export default function AdminDashboard() {
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-2">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              <span className="hidden sm:inline">Resumen</span>
-            </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">Usuarios</span>
-            </TabsTrigger>
-            <TabsTrigger value="plans" className="flex items-center gap-2">
-              <Package className="h-4 w-4" />
-              <span className="hidden sm:inline">Paquetes</span>
-            </TabsTrigger>
-            <TabsTrigger value="promotions" className="flex items-center gap-2">
-              <Ticket className="h-4 w-4" />
-              <span className="hidden sm:inline">Promociones</span>
-            </TabsTrigger>
-            <TabsTrigger value="coupons" className="flex items-center gap-2">
-              <Gift className="h-4 w-4" />
-              <span className="hidden sm:inline">Cupones</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0">
+            <TabsList className="inline-flex h-auto w-auto p-1 min-w-full md:grid md:w-full md:grid-cols-5 gap-2">
+              <TabsTrigger value="overview" className="flex items-center gap-2 px-4 py-3 md:py-2 md:px-3">
+                <BarChart3 className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap inline md:hidden lg:inline">Resumen</span>
+              </TabsTrigger>
+              <TabsTrigger value="users" className="flex items-center gap-2 px-4 py-3 md:py-2 md:px-3">
+                <Users className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap inline md:hidden lg:inline">Usuarios</span>
+              </TabsTrigger>
+              <TabsTrigger value="plans" className="flex items-center gap-2 px-4 py-3 md:py-2 md:px-3">
+                <Package className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap inline md:hidden lg:inline">Paquetes</span>
+              </TabsTrigger>
+              <TabsTrigger value="promotions" className="flex items-center gap-2 px-4 py-3 md:py-2 md:px-3">
+                <Ticket className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap inline md:hidden lg:inline">Promociones</span>
+              </TabsTrigger>
+              <TabsTrigger value="coupons" className="flex items-center gap-2 px-4 py-3 md:py-2 md:px-3">
+                <Gift className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap inline md:hidden lg:inline">Cupones</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="overview">
             <AdminOverview />
