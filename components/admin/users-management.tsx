@@ -1434,7 +1434,7 @@ export default function UsersManagement() {
                 <TabsTrigger value="history" className="text-xs sm:text-sm py-2">Historial</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="details" className="flex-1 overflow-y-auto px-6 py-4 space-y-6 mt-0"
+              <TabsContent value="details" className="flex-1 overflow-y-auto px-6 py-4 space-y-6 mt-0">
                 <div className="grid gap-6 lg:grid-cols-2">
                   {/* Personal Info */}
                   <div className="space-y-4">
@@ -2024,11 +2024,11 @@ export default function UsersManagement() {
             </Tabs>
           )}
 
-        <DialogFooter className="px-6 py-4 border-t bg-background">
-          <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>Cerrar</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter className="px-6 py-4 border-t bg-background">
+            <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>Cerrar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div >
   )
 }
