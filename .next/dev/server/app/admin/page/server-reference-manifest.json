@@ -1,0 +1,20 @@
+{
+  "node": {
+    "40e2f6226fd60f4309c44cd8c2ebc1921b80368b36": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteUsers",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "deleteUsers",
+      "filename": "iptv/app/actions/admin-actions.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Home/Downloads/iptv/lib/supabase/server.ts"],"sourcesContent":["import { createClient as supabaseCreateClient } from \"@supabase/supabase-js\"\n\nexport async function createClient() {\n  return supabaseCreateClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)\n}\n\nexport const createServerClient = createClient\n"],"names":[],"mappings":";;;;;;AAAA;;AAEO,eAAe;IACpB,OAAO,IAAA,yRAAoB;AAC7B;AAEO,MAAM,qBAAqB","debugId":null}},
+    {"offset": {"line": 30, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Home/Downloads/iptv/app/page.tsx"],"sourcesContent":["import { redirect } from 'next/navigation'\nimport { createClient } from \"@/lib/supabase/server\"\n\nexport default async function Page() {\n  const supabase = await createClient()\n  const { data } = await supabase.auth.getUser()\n\n  if (data?.user) {\n    redirect(\"/protected\")\n  }\n\n  redirect(\"/auth/login\")\n}\n"],"names":[],"mappings":";;;;AAAA;AAAA;AACA;;;AAEe,eAAe;IAC5B,MAAM,WAAW,MAAM,IAAA,iJAAY;IACnC,MAAM,EAAE,IAAI,EAAE,GAAG,MAAM,SAAS,IAAI,CAAC,OAAO;IAE5C,IAAI,MAAM,MAAM;QACd,IAAA,wUAAQ,EAAC;IACX;IAEA,IAAA,wUAAQ,EAAC;AACX","debugId":null}}]
+}

@@ -1,0 +1,22 @@
+{
+  "devFiles": [],
+  "ampDevFiles": [],
+  "polyfillFiles": [
+    "static/chunks/1f8e3_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_e21a2ba2._.js",
+    "static/chunks/1f8e3_next_dist_compiled_react-dom_a35f73eb._.js",
+    "static/chunks/1f8e3_next_dist_compiled_react-server-dom-turbopack_c6c6e9ff._.js",
+    "static/chunks/1f8e3_next_dist_compiled_next-devtools_index_435e13f1.js",
+    "static/chunks/1f8e3_next_dist_compiled_c68b9655._.js",
+    "static/chunks/1f8e3_next_dist_client_23e782f9._.js",
+    "static/chunks/1f8e3_next_dist_ca6e20ae._.js",
+    "static/chunks/8b330_@swc_helpers_cjs_5fb25365._.js",
+    "static/chunks/iptv_a0ff3932._.js",
+    "static/chunks/turbopack-iptv_51b05eea._.js"
+  ],
+  "pages": {},
+  "ampFirstPages": []
+}

@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "middleware": {
+    "/": {
+      "files": [
+        "server/edge/chunks/iptv_abee2f74._.js",
+        "server/edge/chunks/3ba3f_@supabase_realtime-js_dist_module_a480426e._.js",
+        "server/edge/chunks/330f3_@supabase_storage-js_dist_module_9b89eb84._.js",
+        "server/edge/chunks/46679_@supabase_auth-js_dist_module_b1c4adfb._.js",
+        "server/edge/chunks/91524__pnpm_bd9e6a3c._.js",
+        "server/edge/chunks/[root-of-the-server]__9cf521ef._.js",
+        "server/edge/chunks/turbopack-iptv_edge-wrapper_604bad9f.js"
+      ],
+      "name": "middleware",
+      "page": "/",
+      "matchers": [
+        {
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!_next\\/static|_next\\/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*))(\\\\.json)?[\\/#\\?]?$",
+          "originalSource": "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "development",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "6NM0ZBxBR/nHUKofMrEguUQM2Ltvckdso/gMncOtLn8=",
+        "__NEXT_PREVIEW_MODE_ID": "de3928d74b1f4c166a370d3f58a2d239",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "6fd62a7df4f61c245305be2f86a179f6bfba38cb48ead2439f1fa8608960e5cc",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "201f64c751828ce4db2f057ceebb527638f4b2446562e502bd286b7ea2d305ca"
+      }
+    }
+  },
+  "sortedMiddleware": [
+    "/"
+  ],
+  "functions": {}
+}
