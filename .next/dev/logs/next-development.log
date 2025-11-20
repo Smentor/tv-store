@@ -1,29 +1,428 @@
-[00:00:02.163] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-[00:00:02.422] Server  LOG      ✓ Ready in 1789ms
-[00:00:06.184] Server  LOG      ○ Compiling /admin ...
-[00:00:14.675] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json.tmp.2rv616c9cfg' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json'
-[00:00:14.752] Server  ERROR    ⨯ Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json.tmp.2rv616c9cfg' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json'
-[00:00:15.204] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json.tmp.hofwt5w5wm' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json'
-[00:00:15.581] Server  ERROR    ⨯ Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json.tmp.hofwt5w5wm' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json'
-[00:00:18.766] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\app-paths-manifest.json.tmp.aphjmbeoep' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\app-paths-manifest.json'
-[00:00:18.783] Server  ERROR    ⨯ Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\app-paths-manifest.json.tmp.aphjmbeoep' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\app-paths-manifest.json'
-[00:00:18.849] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json.tmp.skfs4p4f7hm' -> 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json'
-[00:00:18.855] Server  ERROR    ⨯ Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json.tmp.skfs4p4f7hm' -> 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json'
-[00:00:18.936] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\static\development\_buildManifest.js.tmp.u82f9gmpegc' -> 'C:\Users\Home\Downloads\iptv\.next\dev\static\development\_buildManifest.js'
-[00:00:18.951] Server  ERROR   Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json.tmp.hofwt5w5wm' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json'
-[00:00:19.036] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.o7o62j68ah' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:19.239] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\pages-manifest.json.tmp.3k2856tsnsb' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\pages-manifest.json'
-[00:00:19.283] Server  ERROR   Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json.tmp.2rv616c9cfg' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json'
-[00:00:19.289] Server  ERROR   Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.o7o62j68ah' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:19.300] Server  ERROR    ⨯ "unhandledRejection:" Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.o7o62j68ah' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:19.308] Server  ERROR    ⨯ "unhandledRejection: " Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.o7o62j68ah' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:21.567] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json.tmp.v16ap03z5z' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\server-reference-manifest.json'
-[00:00:22.606] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\app-paths-manifest.json.tmp.1fboolzvmmo' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\app-paths-manifest.json'
-[00:00:23.057] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json.tmp.y3sqjaanu0n' -> 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json'
-[00:00:23.062] Server  ERROR    ⨯ Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json.tmp.y3sqjaanu0n' -> 'C:\Users\Home\Downloads\iptv\.next\dev\build-manifest.json'
-[00:00:23.220] Server  ERROR   Node.js fs rename failed after 101 retries with error Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.d3i6hsalltt' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:23.287] Server  ERROR   Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.d3i6hsalltt' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:23.293] Server  ERROR    ⨯ "unhandledRejection:" Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.d3i6hsalltt' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:23.387] Server  ERROR    ⨯ "unhandledRejection: " Error: EPERM: operation not permitted, rename 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json.tmp.d3i6hsalltt' -> 'C:\Users\Home\Downloads\iptv\.next\dev\server\next-font-manifest.json'
-[00:00:25.100] Server  WARN    Could not find files for /_error in .next/build-manifest.json
-[00:00:25.124] Server  WARN    Could not find files for /_error in .next/build-manifest.json
+[00:00:01.550] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:01.778] Server  LOG      ✓ Ready in 1298ms
+[00:00:05.189] Server  LOG      ○ Compiling /admin ...
+[00:00:06.081] Server  LOG     [ProtectedPage] Rendering...
+[00:00:06.439] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:00:06.440] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:00:07.127] Server  LOG     [ProtectedPage] Profile fetched: "marta"
+[00:00:07.129] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:00:07.789] Server  LOG     [ProtectedPage] Rendering...
+[00:00:08.004] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:00:08.005] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:00:08.277] Server  LOG     [ProtectedPage] Profile fetched: "marta"
+[00:00:08.279] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:00:08.622] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.058] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:00:09.058] Browser LOG     [useSubscription] No user, skipping fetch
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.058] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:00:09.058] Browser LOG     [useSubscription] No user, skipping fetch
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.058] Browser LOG     [useAuth] Fetching user...
+[00:00:09.184] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:00:09.184] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/protected","route":"/protected"}
+[00:00:09.184] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/protected color: rgb(120, 120, 120) color: inherit {"dp":"/protected","o":"http://localhost:3000/protected","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763607943818}
+[00:00:09.519] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:09.519] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:00:09.519] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:00:09.519] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:00:09.519] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:00:09.557] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:09.799] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:09.799] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:00:09.799] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:00:09.799] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:00:09.799] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:00:10.063] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:10.329] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:00:10.329] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/admin","route":"/admin"}
+[00:00:10.329] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/admin color: rgb(120, 120, 120) color: inherit {"dp":"/admin","o":"http://localhost:3000/admin","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763607944534}
+[00:00:10.417] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:10.764] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:11.013] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:11.013] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:00:11.013] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:00:11.261] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:11.554] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:00:12.697] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:00:12.697] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:00:12.936] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:00:12.936] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:00:13.067] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:00:13.302] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:01:19.894] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:01:19.894] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:19.894] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:01:19.894] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:19.894] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:20.764] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:01:20.764] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:01:21.077] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:01:38.658] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:01:38.658] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:38.658] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:01:38.658] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:38.658] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:39.021] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:01:39.021] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:01:39.311] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:01:41.481] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:01:41.481] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:41.481] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:01:41.481] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:41.481] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:01:42.344] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:01:42.344] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:01:42.518] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:01:44.156] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:44.321] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:01:44.321] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/admin","route":"/admin"}
+[00:01:44.321] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/admin color: rgb(120, 120, 120) color: inherit {"dp":"/admin","o":"http://localhost:3000/admin","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608038961}
+[00:01:53.205] Browser LOG     [v0] Toast creado: {"description":"La información del cliente ha sido actualizada","id":"1","title":"Perfil actualizado"}
+[00:02:03.267] Browser LOG     [v0] Toast creado: {"description":"La información del cliente ha sido actualizada","id":"2","title":"Perfil actualizado"}
+[00:02:10.782] Server  LOG     [ProtectedPage] Rendering...
+[00:02:11.054] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:02:11.057] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:02:11.350] Server  LOG     [ProtectedPage] Profile fetched: "marta3"
+[00:02:11.351] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:02:11.639] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:02:11.911] Browser LOG     [useSubscription] No user, skipping fetch
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:02:11.911] Browser LOG     [useSubscription] No user, skipping fetch
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     [useAuth] Fetching user...
+[00:02:11.911] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:02:11.911] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/protected","route":"/protected"}
+[00:02:11.911] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/protected color: rgb(120, 120, 120) color: inherit {"dp":"/protected","o":"http://localhost:3000/protected","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608066542}
+[00:02:12.224] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:12.224] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:02:12.224] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:02:12.224] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:02:12.224] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:02:12.450] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:12.450] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:02:12.450] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:02:12.450] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:02:12.450] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:02:12.683] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:12.949] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:13.242] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:13.524] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:13.524] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:02:13.524] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:02:13.758] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:14.008] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:02:15.066] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:02:15.066] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:02:15.297] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:02:15.297] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:02:15.548] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:02:15.801] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:11.866] Browser LOG     [v0] Toast creado: {"description":"La información del cliente ha sido actualizada","id":"3","title":"Perfil actualizado"}
+[00:06:16.553] Server  LOG     [ProtectedPage] Rendering...
+[00:06:16.812] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:06:16.813] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:06:17.068] Server  LOG     [ProtectedPage] Profile fetched: "marta3"
+[00:06:17.070] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:06:17.262] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:06:17.496] Browser LOG     [useSubscription] No user, skipping fetch
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:06:17.496] Browser LOG     [useSubscription] No user, skipping fetch
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     [useAuth] Fetching user...
+[00:06:17.496] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:06:17.496] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/protected","route":"/protected"}
+[00:06:17.496] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/protected color: rgb(120, 120, 120) color: inherit {"dp":"/protected","o":"http://localhost:3000/protected","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608312133}
+[00:06:17.916] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:17.916] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:17.916] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:17.916] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:17.916] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:18.165] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:18.165] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:18.165] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:18.165] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:18.166] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:18.398] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:18.665] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:18.965] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:19.189] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:19.189] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:19.189] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:19.415] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:19.642] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:20.695] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:20.695] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:06:20.960] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:06:20.961] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:21.195] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:21.382] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:27.720] Browser LOG     [v0] Toast creado: {"description":"La información del cliente ha sido actualizada","id":"4","title":"Perfil actualizado"}
+[00:06:30.311] Server  LOG     [ProtectedPage] Rendering...
+[00:06:30.523] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:06:30.524] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:06:30.749] Server  LOG     [ProtectedPage] Profile fetched: "marta3"
+[00:06:30.752] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:06:31.027] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:06:31.329] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:06:31.330] Browser LOG     [useSubscription] No user, skipping fetch
+[00:06:31.330] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:06:31.330] Browser LOG     [useSubscription] No user, skipping fetch
+[00:06:31.330] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useAuth] Fetching user...
+[00:06:31.330] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:31.330] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:31.330] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:31.330] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:31.330] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:31.330] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:06:31.330] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/protected","route":"/protected"}
+[00:06:31.330] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/protected color: rgb(120, 120, 120) color: inherit {"dp":"/protected","o":"http://localhost:3000/protected","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608325964}
+[00:06:31.650] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:31.650] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:31.650] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:31.650] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:31.650] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:31.893] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:31.893] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:31.893] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:31.893] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:06:31.893] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:32.126] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:32.415] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:32.718] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:32.945] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:32.945] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:32.945] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:06:33.180] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:33.415] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:06:34.459] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:34.459] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:06:34.686] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:34.686] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:06:34.929] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:34.929] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:06:35.078] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:35.314] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:35.572] Browser LOG     [useSubscription] Subscription fetched: bbbwq432432
+[00:06:46.172] Browser LOG     [v0] Toast creado: {"description":"Tu información de contacto se ha guardado correctamente","id":"1","title":"✓ Información actualizada"}
+[00:06:50.526] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:06:50.709] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:06:50.709] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/admin","route":"/admin"}
+[00:06:50.709] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/admin color: rgb(120, 120, 120) color: inherit {"dp":"/admin","o":"http://localhost:3000/admin","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608345336}
+[00:07:02.648] Browser LOG     [v0] Toast creado: {"description":"Tu información de contacto se ha guardado correctamente","id":"2","title":"✓ Información actualizada"}
+[00:07:05.278] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:07:05.450] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:07:05.451] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/admin","route":"/admin"}
+[00:07:05.451] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/admin color: rgb(120, 120, 120) color: inherit {"dp":"/admin","o":"http://localhost:3000/admin","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608360085}
+[00:07:25.635] Browser LOG     [v0] Toast creado: {"description":"El plan se actualizó a Premium","id":"1","title":"Plan actualizado"}
+[00:07:38.209] Server  LOG     [ProtectedPage] Rendering...
+[00:07:38.494] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:07:38.495] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:07:38.839] Server  LOG     [ProtectedPage] Profile fetched: "marta3"
+[00:07:38.840] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:07:39.077] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:07:39.300] Browser LOG     [useSubscription] No user, skipping fetch
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:07:39.300] Browser LOG     [useSubscription] No user, skipping fetch
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     [useAuth] Fetching user...
+[00:07:39.300] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:07:39.300] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/protected","route":"/protected"}
+[00:07:39.300] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/protected color: rgb(120, 120, 120) color: inherit {"dp":"/protected","o":"http://localhost:3000/protected","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608393937}
+[00:07:39.684] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:39.684] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:39.684] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:39.684] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:39.684] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:39.945] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:39.945] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:39.945] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:39.945] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:39.945] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:40.200] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:40.500] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:40.832] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:41.085] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:41.085] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:41.085] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:41.355] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:41.592] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:42.727] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:42.727] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:07:42.990] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:42.990] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:07:43.182] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:43.430] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:50.055] Browser LOG     [v0] Toast creado: {"description":"Se eliminaron las notificaciones enviadas","id":"2","title":"Eliminado"}
+[00:07:51.643] Browser LOG     [v0] Toast creado: {"description":"Se eliminaron las notificaciones enviadas","id":"3","title":"Eliminado"}
+[00:07:54.269] Server  LOG     [ProtectedPage] Rendering...
+[00:07:54.548] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:07:54.550] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:07:54.813] Server  LOG     [ProtectedPage] Profile fetched: "marta3"
+[00:07:54.816] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:07:55.014] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:07:55.295] Browser LOG     [useAuth] Fetching user...
+[00:07:55.295] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:07:55.295] Browser LOG     [useSubscription] No user, skipping fetch
+[00:07:55.295] Browser LOG     [useAuth] Fetching user...
+[00:07:55.295] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:07:55.296] Browser LOG     [useSubscription] No user, skipping fetch
+[00:07:55.296] Browser LOG     [useAuth] Fetching user...
+[00:07:55.296] Browser LOG     [useAuth] Fetching user...
+[00:07:55.296] Browser LOG     [useAuth] Fetching user...
+[00:07:55.296] Browser LOG     [useAuth] Fetching user...
+[00:07:55.296] Browser LOG     [useAuth] Fetching user...
+[00:07:55.296] Browser LOG     [useAuth] Fetching user...
+[00:07:55.296] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:55.296] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:55.296] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:55.296] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:55.296] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:55.296] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:07:55.296] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/protected","route":"/protected"}
+[00:07:55.296] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/protected color: rgb(120, 120, 120) color: inherit {"dp":"/protected","o":"http://localhost:3000/protected","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608409929}
+[00:07:55.547] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:55.547] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:55.547] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:55.547] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:55.547] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:55.782] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:55.782] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:55.782] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:55.782] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:07:55.782] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:56.066] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:56.363] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:56.671] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:56.889] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:56.889] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:56.889] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:07:57.137] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:57.369] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:07:58.393] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:58.393] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:07:58.591] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:58.591] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:07:58.865] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:07:58.865] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:59.069] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:59.305] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:07:59.534] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:08:00.903] Server  LOG     [ProtectedPage] Rendering...
+[00:08:01.119] Server  LOG     [ProtectedPage] User check: "cliente3@test.com" "Error:" "None"
+[00:08:01.120] Server  LOG     [ProtectedPage] Fetching profile for user: "064fa13d-cea4-499f-9c78-d014aed2f14e"
+[00:08:01.284] Server  LOG     [ProtectedPage] Profile fetched: "marta3"
+[00:08:01.287] Server  LOG     [ProtectedPage] Rendering dashboard
+[00:08:01.494] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:08:01.701] Browser LOG     [useSubscription] No user, skipping fetch
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     [useSubscription] fetchSubscription called, user: No user
+[00:08:01.701] Browser LOG     [useSubscription] No user, skipping fetch
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     [useAuth] Fetching user...
+[00:08:01.701] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:08:01.701] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/protected","route":"/protected"}
+[00:08:01.701] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/protected color: rgb(120, 120, 120) color: inherit {"dp":"/protected","o":"http://localhost:3000/protected","sdkn":"@vercel/analytics/next","sdkv":"1.5.0","sv":"0.1.3","ts":1763608416340}
+[00:08:01.966] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:01.966] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:08:01.966] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:08:01.966] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:08:01.967] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:08:02.195] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:02.195] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:08:02.195] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:08:02.195] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:08:02.195] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:08:02.477] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:02.800] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:03.125] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:03.375] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:03.375] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:08:03.375] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:08:03.641] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:03.934] Browser LOG     [useAuth] User fetched: cliente3@test.com
+[00:08:05.028] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:08:05.028] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:08:05.235] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:08:05.235] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:08:05.521] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:08:05.725] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:07.648] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:07.648] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:07.648] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:07.648] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:07.648] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:08.066] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:08.066] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:09:08.331] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:10.875] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:10.875] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:10.875] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:10.875] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:10.875] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:11.251] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:09:11.251] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:11.472] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:19.243] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:19.243] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:19.243] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:19.244] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:19.244] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:19.551] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:19.552] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:09:19.774] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:30.217] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:30.217] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:30.217] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:30.217] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:30.217] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:31.222] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:31.223] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:09:31.223] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:31.457] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:31.457] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:31.457] Browser LOG     [useSubscription] fetchSubscription called, user: cliente3@test.com
+[00:09:31.457] Browser LOG     [useSubscription] Fetching subscription for user: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:31.457] Browser LOG     [v0] Cargando settings para usuario: 064fa13d-cea4-499f-9c78-d014aed2f14e
+[00:09:31.961] Browser LOG     [v0] Settings cargados: {"created_at":"2025-11-18T02:27:10.692829+00:00","email_notifications":false,"id":"be9b2694-5ab0-4913-9456-12c12869cf9a","plan_changes_notifications":false,"renewal_reminder":false,"updated_at":"2025-11-18T02:27:53.842+00:00","user_id":"064fa13d-cea4-499f-9c78-d014aed2f14e","whatsapp_notifications":false}
+[00:09:31.961] Browser LOG     [useSubscription] Subscription fetched: Premium
+[00:09:32.967] Browser LOG     [useSubscription] Subscription fetched: Premium
