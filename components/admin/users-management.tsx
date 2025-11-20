@@ -1419,22 +1419,22 @@ export default function UsersManagement() {
 
       {/* User Details Dialog */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-xl">Gestión de Cliente: {`${selectedUser?.first_name || ''} ${selectedUser?.last_name || ''}`.trim()}</DialogTitle>
+        <DialogContent className="max-w-[95vw] sm:max-w-5xl h-[95vh] flex flex-col p-0">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b">
+            <DialogTitle className="text-lg sm:text-xl">Gestión de Cliente: {`${selectedUser?.first_name || ''} ${selectedUser?.last_name || ''}`.trim()}</DialogTitle>
             <DialogDescription>Administra la cuenta, servicios y comunicaciones</DialogDescription>
           </DialogHeader>
 
           {selectedUser && (
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4 h-auto">
-                <TabsTrigger value="details" className="text-xs sm:text-sm">Detalles General</TabsTrigger>
-                <TabsTrigger value="billing" className="text-xs sm:text-sm">Facturación</TabsTrigger>
-                <TabsTrigger value="communications" className="text-xs sm:text-sm">Comunicación</TabsTrigger>
-                <TabsTrigger value="history" className="text-xs sm:text-sm">Historial</TabsTrigger>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+              <TabsList className="grid w-full grid-cols-4 h-auto mx-6 mt-4">
+                <TabsTrigger value="details" className="text-xs sm:text-sm py-2">Detalles</TabsTrigger>
+                <TabsTrigger value="billing" className="text-xs sm:text-sm py-2">Facturación</TabsTrigger>
+                <TabsTrigger value="communications" className="text-xs sm:text-sm py-2">Comunicación</TabsTrigger>
+                <TabsTrigger value="history" className="text-xs sm:text-sm py-2">Historial</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="details" className="space-y-6 py-4">
+              <TabsContent value="details" className="flex-1 overflow-y-auto px-6 py-4 space-y-6 mt-0"
                 <div className="grid gap-6 lg:grid-cols-2">
                   {/* Personal Info */}
                   <div className="space-y-4">
@@ -1815,7 +1815,80 @@ export default function UsersManagement() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="communications" className="space-y-4 py-4">
+              <TabsContent value="billing" className="flex-1 overflow-y-auto px-6 py-4 space-y-6 mt-0">
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
+                      <FileText className="h-4 w-4" /> Historial de Facturas
+                    </h3>
+                    <Card>
+                      <CardContent className="p-0">
+                        {loadingInvoices ? (
+                          <div className="p-8 text-center">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="w-[120px]">Fecha</TableHead>
+                                  <TableHead className="w-[100px]">Monto</TableHead>
+                                  <TableHead className="w-[100px]">Estado</TableHead>
+                                  <TableHead>Descripción</TableHead>
+                                  <TableHead className="w-[120px]">Vencimiento</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {userInvoices.length === 0 ? (
+                                  <TableRow>
+                                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                                      <FileText className="h-8 w-8 mx-auto mb-2 opacity-20" />
+                                      <p className="text-sm">No hay facturas registradas</p>
+                                    </TableCell>
+                                  </TableRow>
+                                ) : (
+                                  userInvoices.map((invoice) => (
+                                    <TableRow key={invoice.id}>
+                                      <TableCell className="font-medium">
+                                        {format(new Date(invoice.invoice_date || invoice.created_at), 'dd/MM/yyyy', { locale: es })}
+                                      </TableCell>
+                                      <TableCell className="font-bold text-green-600">
+                                        ${invoice.amount.toFixed(2)}
+                                      </TableCell>
+                                      <TableCell>
+                                        <Badge
+                                          className={
+                                            invoice.status === 'paid'
+                                              ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20'
+                                              : invoice.status === 'pending'
+                                                ? 'bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20'
+                                                : 'bg-red-500/10 text-red-600 hover:bg-red-500/20'
+                                          }
+                                        >
+                                          {invoice.status === 'paid' ? 'Pagado' : invoice.status === 'pending' ? 'Pendiente' : 'Fallido'}
+                                        </Badge>
+                                      </TableCell>
+                                      <TableCell className="max-w-xs truncate text-sm text-muted-foreground">
+                                        {invoice.description || 'Pago de suscripción'}
+                                      </TableCell>
+                                      <TableCell className="text-sm text-muted-foreground">
+                                        {invoice.due_date ? format(new Date(invoice.due_date), 'dd/MM/yyyy', { locale: es }) : '-'}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))
+                                )}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="communications" className="flex-1 overflow-y-auto px-6 py-4 space-y-4 mt-0">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-4">
                     <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
@@ -1889,7 +1962,7 @@ export default function UsersManagement() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="history" className="space-y-4 py-4">
+              <TabsContent value="history" className="flex-1 overflow-y-auto px-6 py-4 space-y-4 mt-0">
                 <div className="space-y-4">
                   <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
                     <History className="h-4 w-4" /> Registro de Cambios
@@ -1901,44 +1974,48 @@ export default function UsersManagement() {
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                         </div>
                       ) : (
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Fecha</TableHead>
-                              <TableHead>Acción</TableHead>
-                              <TableHead>Detalles</TableHead>
-                              <TableHead>Admin</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {userLogs.length === 0 ? (
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
                               <TableRow>
-                                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                                  No hay registros de cambios para este usuario
-                                </TableCell>
+                                <TableHead className="whitespace-nowrap">Fecha</TableHead>
+                                <TableHead>Acción</TableHead>
+                                <TableHead>Detalles</TableHead>
+                                <TableHead>Admin</TableHead>
                               </TableRow>
-                            ) : (
-                              userLogs.map((log) => (
-                                <TableRow key={log.id}>
-                                  <TableCell className="whitespace-nowrap">
-                                    {format(new Date(log.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}
-                                  </TableCell>
-                                  <TableCell>
-                                    <Badge variant="outline" className="capitalize">
-                                      {log.action.replace(/_/g, ' ')}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell className="max-w-md truncate" title={JSON.stringify(log.details)}>
-                                    {formatLogDetails(log.action, log.details)}
-                                  </TableCell>
-                                  <TableCell className="text-xs text-muted-foreground">
-                                    {log.admin_id ? 'Admin' : 'Sistema'}
+                            </TableHeader>
+                            <TableBody>
+                              {userLogs.length === 0 ? (
+                                <TableRow>
+                                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                                    No hay registros de cambios para este usuario
                                   </TableCell>
                                 </TableRow>
-                              ))
-                            )}
-                          </TableBody>
-                        </Table>
+                              ) : (
+                                userLogs.map((log) => (
+                                  <TableRow key={log.id}>
+                                    <TableCell className="whitespace-nowrap text-sm">
+                                      {format(new Date(log.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}
+                                    </TableCell>
+                                    <TableCell>
+                                      <Badge variant="outline" className="capitalize text-xs">
+                                        {log.action.replace(/_/g, ' ')}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell className="max-w-[300px]">
+                                      <div className="text-sm break-words" title={JSON.stringify(log.details)}>
+                                        {formatLogDetails(log.action, log.details)}
+                                      </div>
+                                    </TableCell>
+                                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                                      {log.admin_id ? 'Admin' : 'Sistema'}
+                                    </TableCell>
+                                  </TableRow>
+                                ))
+                              )}
+                            </TableBody>
+                          </Table>
+                        </div>
                       )}
                     </CardContent>
                   </Card>
@@ -1947,11 +2024,11 @@ export default function UsersManagement() {
             </Tabs>
           )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>Cerrar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+        <DialogFooter className="px-6 py-4 border-t bg-background">
+          <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>Cerrar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </div >
   )
 }
