@@ -14,6 +14,12 @@ export interface Subscription {
   next_billing_date: string
   created_at: string
   updated_at: string
+  plan?: {
+    id: string
+    name: string
+    max_screens: number
+    price: number
+  }
 }
 
 export function useSubscription() {
@@ -37,7 +43,15 @@ export function useSubscription() {
       const supabase = createClient()
       const { data, error } = await supabase
         .from("subscriptions")
-        .select("*")
+        .select(`
+          *,
+          plan:plans!subscriptions_plan_id_fkey (
+            id,
+            name,
+            max_screens,
+            price
+          )
+        `)
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(1)

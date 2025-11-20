@@ -46,8 +46,9 @@ export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
     ? Math.ceil((new Date(subscription.next_billing_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
     : 0
 
-  const connectedDevices = 2
-  const maxDevices = 3
+  // Dispositivos conectados - primer valor dummy, máximo desde el plan
+  const connectedDevices = 2 // TODO: Obtener de tabla de dispositivos reales
+  const maxDevices = subscription?.plan?.max_screens || 1
   const devicePercentage = (connectedDevices / maxDevices) * 100
 
   const formatDate = (dateString: string) => {

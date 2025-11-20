@@ -536,7 +536,15 @@ function useSubscription() {
                 console.log('[useSubscription] Fetching subscription for user:', user.id);
                 setLoading(true);
                 const supabase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createClient"])();
-                const { data, error } = await supabase.from("subscriptions").select("*").eq("user_id", user.id).order("created_at", {
+                const { data, error } = await supabase.from("subscriptions").select(`
+          *,
+          plan:plans!subscriptions_plan_id_fkey (
+            id,
+            name,
+            max_screens,
+            price
+          )
+        `).eq("user_id", user.id).order("created_at", {
                     ascending: false
                 }).limit(1).single();
                 if (error && error.code !== "PGRST116") throw error;
@@ -845,8 +853,10 @@ function DashboardHome({ setCurrentView }) {
         }
     };
     const daysRemaining = subscription ? Math.ceil((new Date(subscription.next_billing_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : 0;
-    const connectedDevices = 2;
-    const maxDevices = 3;
+    // Dispositivos conectados - primer valor dummy, máximo desde el plan
+    const connectedDevices = 2 // TODO: Obtener de tabla de dispositivos reales
+    ;
+    const maxDevices = subscription?.plan?.max_screens || 1;
     const devicePercentage = connectedDevices / maxDevices * 100;
     const formatDate = (dateString)=>{
         const date = new Date(dateString);
@@ -908,7 +918,7 @@ function DashboardHome({ setCurrentView }) {
             children: "Cargando información..."
         }, void 0, false, {
             fileName: "[project]/iptv/components/dashboard-home.tsx",
-            lineNumber: 114,
+            lineNumber: 115,
             columnNumber: 12
         }, this);
     }
@@ -922,7 +932,7 @@ function DashboardHome({ setCurrentView }) {
                         children: "Bienvenido de vuelta"
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                        lineNumber: 120,
+                        lineNumber: 121,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -930,18 +940,18 @@ function DashboardHome({ setCurrentView }) {
                         children: "Aquí está el resumen de tu cuenta"
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                        lineNumber: 121,
+                        lineNumber: 122,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                lineNumber: 119,
+                lineNumber: 120,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$notifications$2d$list$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NotificationsList"], {}, void 0, false, {
                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                lineNumber: 125,
+                lineNumber: 126,
                 columnNumber: 7
             }, this),
             activePromotions.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -955,12 +965,12 @@ function DashboardHome({ setCurrentView }) {
                                 className: "w-6 h-6 text-white"
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                lineNumber: 131,
+                                lineNumber: 132,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                            lineNumber: 130,
+                            lineNumber: 131,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -974,7 +984,7 @@ function DashboardHome({ setCurrentView }) {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 134,
+                                    lineNumber: 135,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -982,7 +992,7 @@ function DashboardHome({ setCurrentView }) {
                                     children: activePromotions[0].description
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 137,
+                                    lineNumber: 138,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1004,7 +1014,7 @@ function DashboardHome({ setCurrentView }) {
                                             }, void 0, true)
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 141,
+                                            lineNumber: 142,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1013,30 +1023,30 @@ function DashboardHome({ setCurrentView }) {
                                             children: "Ver planes →"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 148,
+                                            lineNumber: 149,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 140,
+                                    lineNumber: 141,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                            lineNumber: 133,
+                            lineNumber: 134,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                    lineNumber: 129,
+                    lineNumber: 130,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                lineNumber: 128,
+                lineNumber: 129,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1054,7 +1064,7 @@ function DashboardHome({ setCurrentView }) {
                                             children: "Plan Actual"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 166,
+                                            lineNumber: 167,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1062,7 +1072,7 @@ function DashboardHome({ setCurrentView }) {
                                             children: subscription?.plan_name || "Sin plan"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 167,
+                                            lineNumber: 168,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1070,13 +1080,13 @@ function DashboardHome({ setCurrentView }) {
                                             children: subscription?.status === "active" ? "Activo" : "Inactivo"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 168,
+                                            lineNumber: 169,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 165,
+                                    lineNumber: 166,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1085,23 +1095,23 @@ function DashboardHome({ setCurrentView }) {
                                         className: "w-6 h-6 text-accent"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                        lineNumber: 171,
+                                        lineNumber: 172,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 170,
+                                    lineNumber: 171,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                            lineNumber: 164,
+                            lineNumber: 165,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                        lineNumber: 163,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1116,7 +1126,7 @@ function DashboardHome({ setCurrentView }) {
                                             children: "Próxima Facturación"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 180,
+                                            lineNumber: 181,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1124,7 +1134,7 @@ function DashboardHome({ setCurrentView }) {
                                             children: subscription ? formatDate(subscription.next_billing_date) : "N/A"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 181,
+                                            lineNumber: 182,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1134,7 +1144,7 @@ function DashboardHome({ setCurrentView }) {
                                                     className: "w-3 h-3"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 185,
+                                                    lineNumber: 186,
                                                     columnNumber: 17
                                                 }, this),
                                                 " ",
@@ -1142,13 +1152,13 @@ function DashboardHome({ setCurrentView }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 184,
+                                            lineNumber: 185,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 179,
+                                    lineNumber: 180,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1157,23 +1167,23 @@ function DashboardHome({ setCurrentView }) {
                                         className: "w-6 h-6 text-green-600"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                        lineNumber: 189,
+                                        lineNumber: 190,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 188,
+                                    lineNumber: 189,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                            lineNumber: 178,
+                            lineNumber: 179,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                        lineNumber: 177,
+                        lineNumber: 178,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1199,7 +1209,7 @@ function DashboardHome({ setCurrentView }) {
                                             children: "Dispositivos Conectados"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 207,
+                                            lineNumber: 208,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1211,7 +1221,7 @@ function DashboardHome({ setCurrentView }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 208,
+                                            lineNumber: 209,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1219,13 +1229,13 @@ function DashboardHome({ setCurrentView }) {
                                             children: "Dispositivos activos"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 209,
+                                            lineNumber: 210,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 206,
+                                    lineNumber: 207,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1244,7 +1254,7 @@ function DashboardHome({ setCurrentView }) {
                                                     strokeWidth: "3"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 215,
+                                                    lineNumber: 216,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -1258,13 +1268,13 @@ function DashboardHome({ setCurrentView }) {
                                                     strokeLinecap: "round"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 224,
+                                                    lineNumber: 225,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 213,
+                                            lineNumber: 214,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1273,35 +1283,35 @@ function DashboardHome({ setCurrentView }) {
                                                 className: "w-6 h-6 text-accent"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                lineNumber: 237,
+                                                lineNumber: 238,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 236,
+                                            lineNumber: 237,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 211,
+                                    lineNumber: 212,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                            lineNumber: 205,
+                            lineNumber: 206,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                        lineNumber: 195,
+                        lineNumber: 196,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                lineNumber: 161,
+                lineNumber: 162,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1312,7 +1322,7 @@ function DashboardHome({ setCurrentView }) {
                         children: "Acciones Rápidas"
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                        lineNumber: 246,
+                        lineNumber: 247,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1333,12 +1343,12 @@ function DashboardHome({ setCurrentView }) {
                                                         className: "w-5 h-5 text-accent"
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                        lineNumber: 252,
+                                                        lineNumber: 253,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 251,
+                                                    lineNumber: 252,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1348,7 +1358,7 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Cambiar de Plan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 255,
+                                                            lineNumber: 256,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1356,37 +1366,37 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Actualiza a un plan superior"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 256,
+                                                            lineNumber: 257,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 254,
+                                                    lineNumber: 255,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 250,
+                                            lineNumber: 251,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$454$2e$0_react$40$19$2e$2$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
                                             className: "w-5 h-5 text-muted-foreground"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 259,
+                                            lineNumber: 260,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 249,
+                                    lineNumber: 250,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                lineNumber: 248,
+                                lineNumber: 249,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1404,12 +1414,12 @@ function DashboardHome({ setCurrentView }) {
                                                         className: "w-5 h-5 text-primary"
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                        lineNumber: 267,
+                                                        lineNumber: 268,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 266,
+                                                    lineNumber: 267,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1419,7 +1429,7 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Ver Facturas"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 270,
+                                                            lineNumber: 271,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1427,37 +1437,37 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Historial de pagos"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 271,
+                                                            lineNumber: 272,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 269,
+                                                    lineNumber: 270,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 265,
+                                            lineNumber: 266,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$454$2e$0_react$40$19$2e$2$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
                                             className: "w-5 h-5 text-muted-foreground"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 274,
+                                            lineNumber: 275,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 264,
+                                    lineNumber: 265,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                lineNumber: 263,
+                                lineNumber: 264,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1475,12 +1485,12 @@ function DashboardHome({ setCurrentView }) {
                                                         className: "w-5 h-5 text-green-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                        lineNumber: 282,
+                                                        lineNumber: 283,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 281,
+                                                    lineNumber: 282,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1490,7 +1500,7 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Ver Credenciales"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 285,
+                                                            lineNumber: 286,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1498,37 +1508,37 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Tu usuario y contraseña"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 286,
+                                                            lineNumber: 287,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 284,
+                                                    lineNumber: 285,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 280,
+                                            lineNumber: 281,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$454$2e$0_react$40$19$2e$2$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
                                             className: "w-5 h-5 text-muted-foreground"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 289,
+                                            lineNumber: 290,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 279,
+                                    lineNumber: 280,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                lineNumber: 278,
+                                lineNumber: 279,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1546,12 +1556,12 @@ function DashboardHome({ setCurrentView }) {
                                                         className: "w-5 h-5 text-blue-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                        lineNumber: 297,
+                                                        lineNumber: 298,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 296,
+                                                    lineNumber: 297,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1561,7 +1571,7 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Soporte Técnico"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 300,
+                                                            lineNumber: 301,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1569,49 +1579,49 @@ function DashboardHome({ setCurrentView }) {
                                                             children: "Contacta a nuestro equipo"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                            lineNumber: 301,
+                                                            lineNumber: 302,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                                    lineNumber: 299,
+                                                    lineNumber: 300,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 295,
+                                            lineNumber: 296,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$lucide$2d$react$40$0$2e$454$2e$0_react$40$19$2e$2$2e$0$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
                                             className: "w-5 h-5 text-muted-foreground"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                            lineNumber: 304,
+                                            lineNumber: 305,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 294,
+                                    lineNumber: 295,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                lineNumber: 293,
+                                lineNumber: 294,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/dashboard-home.tsx",
-                        lineNumber: 247,
+                        lineNumber: 248,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                lineNumber: 245,
+                lineNumber: 246,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1623,7 +1633,7 @@ function DashboardHome({ setCurrentView }) {
                             className: `w-5 h-5 ${alertStatus.iconColor} flex-shrink-0 mt-0.5`
                         }, void 0, false, {
                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                            lineNumber: 313,
+                            lineNumber: 314,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1633,7 +1643,7 @@ function DashboardHome({ setCurrentView }) {
                                     children: alertStatus.title
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 315,
+                                    lineNumber: 316,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1641,30 +1651,30 @@ function DashboardHome({ setCurrentView }) {
                                     children: alertStatus.message
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                                    lineNumber: 316,
+                                    lineNumber: 317,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/dashboard-home.tsx",
-                            lineNumber: 314,
+                            lineNumber: 315,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/iptv/components/dashboard-home.tsx",
-                    lineNumber: 312,
+                    lineNumber: 313,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/iptv/components/dashboard-home.tsx",
-                lineNumber: 311,
+                lineNumber: 312,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/iptv/components/dashboard-home.tsx",
-        lineNumber: 118,
+        lineNumber: 119,
         columnNumber: 5
     }, this);
 }
@@ -5928,6 +5938,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pn
 var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/iptv/hooks/use-toast.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$settings$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/iptv/hooks/use-settings.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$profile$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/iptv/hooks/use-profile.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$subscription$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/iptv/hooks/use-subscription.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$auth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/iptv/hooks/use-auth.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/iptv/lib/supabase/client.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/iptv/components/ui/dialog.tsx [app-client] (ecmascript)");
@@ -5935,6 +5946,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -6328,6 +6340,7 @@ function SettingsSection() {
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"])();
     const { settings, loading, updateSettings } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$settings$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSettings"])();
     const { profile, loading: loadingProfile, updateProfile } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$profile$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useProfile"])();
+    const { subscription } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$subscription$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSubscription"])();
     const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$auth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
     const supabase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createClient"])();
     const [notifications, setNotifications] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
@@ -6661,7 +6674,7 @@ function SettingsSection() {
                         className: "animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 444,
+                        lineNumber: 446,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6669,18 +6682,18 @@ function SettingsSection() {
                         children: "Cargando configuración..."
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 445,
+                        lineNumber: 447,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 443,
+                lineNumber: 445,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/iptv/components/settings-section.tsx",
-            lineNumber: 442,
+            lineNumber: 444,
             columnNumber: 7
         }, this);
     }
@@ -6694,7 +6707,7 @@ function SettingsSection() {
                         children: "Configuración"
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 454,
+                        lineNumber: 456,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6702,13 +6715,13 @@ function SettingsSection() {
                         children: "Administra las preferencias de tu cuenta"
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 455,
+                        lineNumber: 457,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 453,
+                lineNumber: 455,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -6725,20 +6738,20 @@ function SettingsSection() {
                                                 className: "w-5 h-5 text-primary"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 462,
+                                                lineNumber: 464,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
                                                 children: "Cuenta y Seguridad"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 463,
+                                                lineNumber: 465,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 461,
+                                        lineNumber: 463,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -6749,26 +6762,26 @@ function SettingsSection() {
                                         children: "Editar información"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 465,
+                                        lineNumber: 467,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 460,
+                                lineNumber: 462,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                 children: "Tu información personal y opciones de seguridad"
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 474,
+                                lineNumber: 476,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 459,
+                        lineNumber: 461,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -6784,14 +6797,14 @@ function SettingsSection() {
                                                 className: "w-4 h-4 text-primary"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 479,
+                                                lineNumber: 481,
                                                 columnNumber: 15
                                             }, this),
                                             "Información Personal"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 478,
+                                        lineNumber: 480,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6806,12 +6819,12 @@ function SettingsSection() {
                                                             className: "w-5 h-5 text-primary"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 485,
+                                                            lineNumber: 487,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 484,
+                                                        lineNumber: 486,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6822,7 +6835,7 @@ function SettingsSection() {
                                                                 children: "Nombre completo"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 488,
+                                                                lineNumber: 490,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6830,19 +6843,19 @@ function SettingsSection() {
                                                                 children: profile?.first_name || profile?.last_name ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : "No especificado"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 489,
+                                                                lineNumber: 491,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 487,
+                                                        lineNumber: 489,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 483,
+                                                lineNumber: 485,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6854,12 +6867,12 @@ function SettingsSection() {
                                                             className: "w-5 h-5 text-primary"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 499,
+                                                            lineNumber: 501,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 498,
+                                                        lineNumber: 500,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6870,7 +6883,7 @@ function SettingsSection() {
                                                                 children: "Correo electrónico"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 502,
+                                                                lineNumber: 504,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6878,19 +6891,19 @@ function SettingsSection() {
                                                                 children: profile?.email || "No especificado"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 503,
+                                                                lineNumber: 505,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 501,
+                                                        lineNumber: 503,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 497,
+                                                lineNumber: 499,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6902,12 +6915,12 @@ function SettingsSection() {
                                                             className: "w-5 h-5 text-primary"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 511,
+                                                            lineNumber: 513,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 510,
+                                                        lineNumber: 512,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6918,7 +6931,7 @@ function SettingsSection() {
                                                                 children: "WhatsApp"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 514,
+                                                                lineNumber: 516,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6926,38 +6939,38 @@ function SettingsSection() {
                                                                 children: profile?.whatsapp || "No especificado"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 515,
+                                                                lineNumber: 517,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 513,
+                                                        lineNumber: 515,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 509,
+                                                lineNumber: 511,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 482,
+                                        lineNumber: 484,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 477,
+                                lineNumber: 479,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "border-t border-border"
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 524,
+                                lineNumber: 526,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6970,14 +6983,14 @@ function SettingsSection() {
                                                 className: "w-4 h-4 text-primary"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 528,
+                                                lineNumber: 530,
                                                 columnNumber: 15
                                             }, this),
                                             "Seguridad"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 527,
+                                        lineNumber: 529,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6993,12 +7006,12 @@ function SettingsSection() {
                                                             className: "w-5 h-5 text-primary"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 537,
+                                                            lineNumber: 539,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 536,
+                                                        lineNumber: 538,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7009,7 +7022,7 @@ function SettingsSection() {
                                                                 children: "Cambiar Contraseña"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 540,
+                                                                lineNumber: 542,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7017,19 +7030,19 @@ function SettingsSection() {
                                                                 children: "Actualiza tu contraseña de acceso"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 541,
+                                                                lineNumber: 543,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 539,
+                                                        lineNumber: 541,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 535,
+                                                lineNumber: 537,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -7047,36 +7060,36 @@ function SettingsSection() {
                                                     d: "m9 18 6-6-6-6"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 545,
+                                                    lineNumber: 547,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 544,
+                                                lineNumber: 546,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 531,
+                                        lineNumber: 533,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 526,
+                                lineNumber: 528,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 476,
+                        lineNumber: 478,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 458,
+                lineNumber: 460,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -7090,33 +7103,33 @@ function SettingsSection() {
                                         className: "w-5 h-5 text-primary"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 556,
+                                        lineNumber: 558,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
                                         children: "Notificaciones"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 557,
+                                        lineNumber: 559,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 555,
+                                lineNumber: 557,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                 children: "Configura cómo y cuándo quieres recibir notificaciones"
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 559,
+                                lineNumber: 561,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 554,
+                        lineNumber: 556,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -7133,7 +7146,7 @@ function SettingsSection() {
                                                 children: "Notificaciones por Email"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 564,
+                                                lineNumber: 566,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7141,13 +7154,13 @@ function SettingsSection() {
                                                 children: "Recibe actualizaciones por correo electrónico"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 565,
+                                                lineNumber: 567,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 563,
+                                        lineNumber: 565,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$switch$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Switch"], {
@@ -7159,13 +7172,13 @@ function SettingsSection() {
                                             })
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 567,
+                                        lineNumber: 569,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 562,
+                                lineNumber: 564,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7179,7 +7192,7 @@ function SettingsSection() {
                                                 children: "Notificaciones por WhatsApp"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 576,
+                                                lineNumber: 578,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7187,13 +7200,13 @@ function SettingsSection() {
                                                 children: "Recibe alertas por WhatsApp"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 577,
+                                                lineNumber: 579,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 575,
+                                        lineNumber: 577,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$switch$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Switch"], {
@@ -7205,13 +7218,13 @@ function SettingsSection() {
                                             })
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 579,
+                                        lineNumber: 581,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 574,
+                                lineNumber: 576,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7225,7 +7238,7 @@ function SettingsSection() {
                                                 children: "Recordatorio de Renovación"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 588,
+                                                lineNumber: 590,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7233,13 +7246,13 @@ function SettingsSection() {
                                                 children: "Te avisamos antes de que venza tu suscripción"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 589,
+                                                lineNumber: 591,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 587,
+                                        lineNumber: 589,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$switch$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Switch"], {
@@ -7251,13 +7264,13 @@ function SettingsSection() {
                                             })
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 591,
+                                        lineNumber: 593,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 586,
+                                lineNumber: 588,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7271,7 +7284,7 @@ function SettingsSection() {
                                                 children: "Cambios de Plan"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 600,
+                                                lineNumber: 602,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7279,13 +7292,13 @@ function SettingsSection() {
                                                 children: "Notificaciones sobre actualizaciones de tu plan"
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 601,
+                                                lineNumber: 603,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 599,
+                                        lineNumber: 601,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$switch$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Switch"], {
@@ -7297,13 +7310,13 @@ function SettingsSection() {
                                             })
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 603,
+                                        lineNumber: 605,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 598,
+                                lineNumber: 600,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7313,19 +7326,19 @@ function SettingsSection() {
                                 children: savingNotifications ? "Guardando..." : "Guardar Preferencias"
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 610,
+                                lineNumber: 612,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 561,
+                        lineNumber: 563,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 553,
+                lineNumber: 555,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -7340,33 +7353,33 @@ function SettingsSection() {
                                         className: "w-5 h-5 text-primary"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 624,
+                                        lineNumber: 626,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
                                         children: "Gestión de Dispositivos"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 625,
+                                        lineNumber: 627,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 623,
+                                lineNumber: 625,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                 children: "Administra los dispositivos conectados a tu cuenta"
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 627,
+                                lineNumber: 629,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 622,
+                        lineNumber: 624,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -7384,12 +7397,12 @@ function SettingsSection() {
                                                     className: "w-6 h-6 text-primary"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 633,
+                                                    lineNumber: 635,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 632,
+                                                lineNumber: 634,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7399,27 +7412,31 @@ function SettingsSection() {
                                                         children: "Dispositivos conectados"
                                                     }, void 0, false, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 636,
+                                                        lineNumber: 638,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm text-muted-foreground",
-                                                        children: "2 de 3 dispositivos activos"
-                                                    }, void 0, false, {
+                                                        children: [
+                                                            "2 de ",
+                                                            subscription?.plan?.max_screens || 1,
+                                                            " dispositivos activos"
+                                                        ]
+                                                    }, void 0, true, {
                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                        lineNumber: 637,
+                                                        lineNumber: 639,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                lineNumber: 635,
+                                                lineNumber: 637,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 631,
+                                        lineNumber: 633,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7430,13 +7447,13 @@ function SettingsSection() {
                                         children: "Resetear Dispositivos"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 640,
+                                        lineNumber: 644,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 630,
+                                lineNumber: 632,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7444,19 +7461,19 @@ function SettingsSection() {
                                 children: "Al resetear los dispositivos, se desconectarán todos los dispositivos actualmente conectados. Deberás volver a iniciar sesión en cada uno de ellos."
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 649,
+                                lineNumber: 653,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 629,
+                        lineNumber: 631,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 621,
+                lineNumber: 623,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -7471,7 +7488,7 @@ function SettingsSection() {
                                         className: "w-5 h-5 text-destructive"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 660,
+                                        lineNumber: 664,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -7479,26 +7496,26 @@ function SettingsSection() {
                                         children: "Zona Peligrosa"
                                     }, void 0, false, {
                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                        lineNumber: 661,
+                                        lineNumber: 665,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 659,
+                                lineNumber: 663,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                 children: "Acciones irreversibles en tu cuenta"
                             }, void 0, false, {
                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                lineNumber: 663,
+                                lineNumber: 667,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 658,
+                        lineNumber: 662,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -7512,25 +7529,25 @@ function SettingsSection() {
                                     className: "w-4 h-4 mr-2"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 671,
+                                    lineNumber: 675,
                                     columnNumber: 13
                                 }, this),
                                 "Eliminar Cuenta"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 666,
+                            lineNumber: 670,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/iptv/components/settings-section.tsx",
-                        lineNumber: 665,
+                        lineNumber: 669,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 657,
+                lineNumber: 661,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -7544,20 +7561,20 @@ function SettingsSection() {
                                     children: "Cambiar Contraseña"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 681,
+                                    lineNumber: 685,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Ingresa tu nueva contraseña (mínimo 8 caracteres)"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 682,
+                                    lineNumber: 686,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 680,
+                            lineNumber: 684,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7571,7 +7588,7 @@ function SettingsSection() {
                                             children: "Nueva Contraseña"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 688,
+                                            lineNumber: 692,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7585,7 +7602,7 @@ function SettingsSection() {
                                             className: passwordErrors.new ? "border-destructive" : ""
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 689,
+                                            lineNumber: 693,
                                             columnNumber: 15
                                         }, this),
                                         passwordErrors.new && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7593,7 +7610,7 @@ function SettingsSection() {
                                             children: passwordErrors.new
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 697,
+                                            lineNumber: 701,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7601,13 +7618,13 @@ function SettingsSection() {
                                             children: "Mínimo 8 caracteres"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 699,
+                                            lineNumber: 703,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 687,
+                                    lineNumber: 691,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7618,7 +7635,7 @@ function SettingsSection() {
                                             children: "Confirmar Nueva Contraseña"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 702,
+                                            lineNumber: 706,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7632,7 +7649,7 @@ function SettingsSection() {
                                             className: passwordErrors.confirm ? "border-destructive" : ""
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 703,
+                                            lineNumber: 707,
                                             columnNumber: 15
                                         }, this),
                                         passwordErrors.confirm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7640,19 +7657,19 @@ function SettingsSection() {
                                             children: passwordErrors.confirm
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 711,
+                                            lineNumber: 715,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 701,
+                                    lineNumber: 705,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 686,
+                            lineNumber: 690,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -7663,7 +7680,7 @@ function SettingsSection() {
                                     children: "Cancelar"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 716,
+                                    lineNumber: 720,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7672,24 +7689,24 @@ function SettingsSection() {
                                     children: changingPassword ? "Actualizando..." : "Actualizar Contraseña"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 719,
+                                    lineNumber: 723,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 715,
+                            lineNumber: 719,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/iptv/components/settings-section.tsx",
-                    lineNumber: 679,
+                    lineNumber: 683,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 678,
+                lineNumber: 682,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -7704,20 +7721,20 @@ function SettingsSection() {
                                     children: "Eliminar Cuenta"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 733,
+                                    lineNumber: 737,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Esta acción es irreversible. Todos tus datos serán eliminados permanentemente."
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 734,
+                                    lineNumber: 738,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 732,
+                            lineNumber: 736,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7731,14 +7748,14 @@ function SettingsSection() {
                                             children: "ELIMINAR"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 740,
+                                            lineNumber: 744,
                                             columnNumber: 39
                                         }, this),
                                         " en el campo de abajo:"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 739,
+                                    lineNumber: 743,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7747,13 +7764,13 @@ function SettingsSection() {
                                     onChange: (e)=>setDeleteConfirmText(e.target.value)
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 742,
+                                    lineNumber: 746,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 738,
+                            lineNumber: 742,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -7764,7 +7781,7 @@ function SettingsSection() {
                                     children: "Cancelar"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 749,
+                                    lineNumber: 753,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7774,24 +7791,24 @@ function SettingsSection() {
                                     children: "Eliminar Cuenta"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 752,
+                                    lineNumber: 756,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 748,
+                            lineNumber: 752,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/iptv/components/settings-section.tsx",
-                    lineNumber: 731,
+                    lineNumber: 735,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 730,
+                lineNumber: 734,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -7806,20 +7823,20 @@ function SettingsSection() {
                                     children: "Editar Información del Cliente"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 767,
+                                    lineNumber: 771,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Actualiza tu información de contacto"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 768,
+                                    lineNumber: 772,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 766,
+                            lineNumber: 770,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7836,14 +7853,14 @@ function SettingsSection() {
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 775,
+                                                    lineNumber: 779,
                                                     columnNumber: 17
                                                 }, this),
                                                 "Nombre"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 774,
+                                            lineNumber: 778,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7856,13 +7873,13 @@ function SettingsSection() {
                                             placeholder: "Juan"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 778,
+                                            lineNumber: 782,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 773,
+                                    lineNumber: 777,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7876,14 +7893,14 @@ function SettingsSection() {
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 787,
+                                                    lineNumber: 791,
                                                     columnNumber: 17
                                                 }, this),
                                                 "Apellido"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 786,
+                                            lineNumber: 790,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7896,13 +7913,13 @@ function SettingsSection() {
                                             placeholder: "Pérez"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 790,
+                                            lineNumber: 794,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 785,
+                                    lineNumber: 789,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7916,14 +7933,14 @@ function SettingsSection() {
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 799,
+                                                    lineNumber: 803,
                                                     columnNumber: 17
                                                 }, this),
                                                 "Correo electrónico"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 798,
+                                            lineNumber: 802,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7946,7 +7963,7 @@ function SettingsSection() {
                                             className: emailError ? "border-red-500" : ""
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 802,
+                                            lineNumber: 806,
                                             columnNumber: 15
                                         }, this),
                                         emailError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7954,13 +7971,13 @@ function SettingsSection() {
                                             children: emailError
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 819,
+                                            lineNumber: 823,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 797,
+                                    lineNumber: 801,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7974,14 +7991,14 @@ function SettingsSection() {
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 826,
+                                                    lineNumber: 830,
                                                     columnNumber: 17
                                                 }, this),
                                                 "WhatsApp"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 825,
+                                            lineNumber: 829,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8010,7 +8027,7 @@ function SettingsSection() {
                                                                                 children: country.flag
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                                lineNumber: 842,
+                                                                                lineNumber: 846,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8018,24 +8035,24 @@ function SettingsSection() {
                                                                                 children: country.code
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                                lineNumber: 843,
+                                                                                lineNumber: 847,
                                                                                 columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                        lineNumber: 841,
+                                                                        lineNumber: 845,
                                                                         columnNumber: 27
                                                                     }, this) : "Seleccionar";
                                                                 })()
                                                             }, void 0, false, {
                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                lineNumber: 837,
+                                                                lineNumber: 841,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 836,
+                                                            lineNumber: 840,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -8050,7 +8067,7 @@ function SettingsSection() {
                                                                                 children: country.flag
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                                lineNumber: 853,
+                                                                                lineNumber: 857,
                                                                                 columnNumber: 27
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8058,7 +8075,7 @@ function SettingsSection() {
                                                                                 children: country.code
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                                lineNumber: 854,
+                                                                                lineNumber: 858,
                                                                                 columnNumber: 27
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -8070,29 +8087,29 @@ function SettingsSection() {
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                                lineNumber: 855,
+                                                                                lineNumber: 859,
                                                                                 columnNumber: 27
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                        lineNumber: 852,
+                                                                        lineNumber: 856,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 }, country.code, false, {
                                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                                    lineNumber: 851,
+                                                                    lineNumber: 855,
                                                                     columnNumber: 23
                                                                 }, this))
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 849,
+                                                            lineNumber: 853,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 830,
+                                                    lineNumber: 834,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8117,7 +8134,7 @@ function SettingsSection() {
                                                             className: getPhoneValidationMessage() ? "border-red-500" : ""
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 862,
+                                                            lineNumber: 866,
                                                             columnNumber: 19
                                                         }, this),
                                                         getPhoneValidationMessage() && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8125,19 +8142,19 @@ function SettingsSection() {
                                                             children: getPhoneValidationMessage()
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 878,
+                                                            lineNumber: 882,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 861,
+                                                    lineNumber: 865,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 829,
+                                            lineNumber: 833,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8149,19 +8166,19 @@ function SettingsSection() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 884,
+                                            lineNumber: 888,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 824,
+                                    lineNumber: 828,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 772,
+                            lineNumber: 776,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -8172,7 +8189,7 @@ function SettingsSection() {
                                     children: "Cancelar"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 890,
+                                    lineNumber: 894,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -8180,24 +8197,24 @@ function SettingsSection() {
                                     children: "Guardar cambios"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 893,
+                                    lineNumber: 897,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 889,
+                            lineNumber: 893,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/iptv/components/settings-section.tsx",
-                    lineNumber: 765,
+                    lineNumber: 769,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 764,
+                lineNumber: 768,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -8211,20 +8228,20 @@ function SettingsSection() {
                                     children: "Resetear Dispositivos Conectados"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 903,
+                                    lineNumber: 907,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
                                     children: "Esta acción desconectará todos los dispositivos actualmente conectados a tu cuenta."
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 904,
+                                    lineNumber: 908,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 902,
+                            lineNumber: 906,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8237,7 +8254,7 @@ function SettingsSection() {
                                             className: "w-5 h-5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 910,
+                                            lineNumber: 914,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8248,7 +8265,7 @@ function SettingsSection() {
                                                     children: "Importante"
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 912,
+                                                    lineNumber: 916,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -8256,19 +8273,19 @@ function SettingsSection() {
                                                     children: "Deberás volver a iniciar sesión en todos tus dispositivos después de resetearlos. Usa esta opción si sospechas que alguien más está usando tu cuenta."
                                                 }, void 0, false, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 913,
+                                                    lineNumber: 917,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 911,
+                                            lineNumber: 915,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 909,
+                                    lineNumber: 913,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -8279,7 +8296,7 @@ function SettingsSection() {
                                             children: "Dispositivos que serán desconectados:"
                                         }, void 0, false, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 920,
+                                            lineNumber: 924,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -8292,14 +8309,14 @@ function SettingsSection() {
                                                             className: "w-4 h-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 923,
+                                                            lineNumber: 927,
                                                             columnNumber: 19
                                                         }, this),
                                                         "Smart TV - Samsung (Última conexión: Hoy)"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 922,
+                                                    lineNumber: 926,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -8309,32 +8326,32 @@ function SettingsSection() {
                                                             className: "w-4 h-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                                            lineNumber: 927,
+                                                            lineNumber: 931,
                                                             columnNumber: 19
                                                         }, this),
                                                         "Android Phone - Xiaomi (Última conexión: Ayer)"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                                    lineNumber: 926,
+                                                    lineNumber: 930,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/iptv/components/settings-section.tsx",
-                                            lineNumber: 921,
+                                            lineNumber: 925,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 919,
+                                    lineNumber: 923,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 908,
+                            lineNumber: 912,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -8345,7 +8362,7 @@ function SettingsSection() {
                                     children: "Cancelar"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 934,
+                                    lineNumber: 938,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -8355,38 +8372,39 @@ function SettingsSection() {
                                     children: resettingDevices ? "Reseteando..." : "Resetear Dispositivos"
                                 }, void 0, false, {
                                     fileName: "[project]/iptv/components/settings-section.tsx",
-                                    lineNumber: 937,
+                                    lineNumber: 941,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/iptv/components/settings-section.tsx",
-                            lineNumber: 933,
+                            lineNumber: 937,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/iptv/components/settings-section.tsx",
-                    lineNumber: 901,
+                    lineNumber: 905,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/iptv/components/settings-section.tsx",
-                lineNumber: 900,
+                lineNumber: 904,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/iptv/components/settings-section.tsx",
-        lineNumber: 452,
+        lineNumber: 454,
         columnNumber: 5
     }, this);
 }
-_s(SettingsSection, "vpBWcJDfPq9JysignAzY6F/l1e8=", false, function() {
+_s(SettingsSection, "0pA2VQDKIwurpIO+lxTu/utVdck=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"],
         __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$settings$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSettings"],
         __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$profile$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useProfile"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$subscription$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSubscription"],
         __TURBOPACK__imported__module__$5b$project$5d2f$iptv$2f$hooks$2f$use$2d$auth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
     ];
 });

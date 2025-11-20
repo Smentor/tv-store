@@ -10,6 +10,7 @@ import { Bell, Shield, Trash2, Lock, User, Mail, Phone, Monitor, AlertTriangle }
 import { useToast } from "@/hooks/use-toast"
 import { useSettings } from "@/hooks/use-settings"
 import { useProfile } from "@/hooks/use-profile"
+import { useSubscription } from "@/hooks/use-subscription"
 import { useAuth } from "@/hooks/use-auth"
 import { createClient } from "@/lib/supabase/client"
 import {
@@ -97,16 +98,17 @@ export function SettingsSection() {
   const { toast } = useToast()
   const { settings, loading, updateSettings } = useSettings()
   const { profile, loading: loadingProfile, updateProfile } = useProfile()
+  const { subscription } = useSubscription()
   const { user } = useAuth()
   const supabase = createClient()
-  
+
   const [notifications, setNotifications] = useState({
     email: settings?.email_notifications ?? true,
     whatsapp: settings?.whatsapp_notifications ?? true,
     renewalReminder: settings?.renewal_reminder ?? true,
     planChanges: settings?.plan_changes_notifications ?? true,
   })
-  
+
   const [editInfoOpen, setEditInfoOpen] = useState(false)
   const [clientInfo, setClientInfo] = useState({
     firstName: "",
@@ -116,7 +118,7 @@ export function SettingsSection() {
     phoneNumber: ""
   })
   const [emailError, setEmailError] = useState("")
-  
+
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showPasswordDialog, setShowPasswordDialog] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState("")
@@ -137,14 +139,14 @@ export function SettingsSection() {
 
   const parseProfileForEdit = () => {
     if (!profile) return null
-    
+
     let countryCode = "+51"
     let phoneNumber = ""
-    
+
     if (profile.whatsapp) {
       const whatsappClean = profile.whatsapp.trim()
       const matchingCountry = countryCodes.find(c => whatsappClean.startsWith(c.code))
-      
+
       if (matchingCountry) {
         countryCode = matchingCountry.code
         phoneNumber = whatsappClean.substring(matchingCountry.code.length).replace(/\D/g, '')
@@ -152,7 +154,7 @@ export function SettingsSection() {
         phoneNumber = whatsappClean.replace(/\D/g, '')
       }
     }
-    
+
     return {
       firstName: profile.first_name || "",
       lastName: profile.last_name || "",
@@ -175,7 +177,7 @@ export function SettingsSection() {
   const getPhoneValidationMessage = () => {
     const country = countryCodes.find(c => c.code === clientInfo.countryCode)
     if (!country) return ""
-    
+
     if (clientInfo.phoneNumber && clientInfo.phoneNumber.length !== country.maxDigits) {
       return `Para ${country.country} se requieren exactamente ${country.maxDigits} dígitos`
     }
@@ -201,7 +203,7 @@ export function SettingsSection() {
       })
     }
   }, [settings])
-  
+
   const handleSaveNotifications = async () => {
     setSavingNotifications(true)
     console.log("[v0] Guardando preferencias de notificaciones")
@@ -256,7 +258,7 @@ export function SettingsSection() {
       })
       return
     }
-    
+
     setEmailError("")
 
     const validationMessage = getPhoneValidationMessage()
@@ -270,10 +272,10 @@ export function SettingsSection() {
       return
     }
 
-    const fullWhatsApp = clientInfo.phoneNumber 
+    const fullWhatsApp = clientInfo.phoneNumber
       ? `${clientInfo.countryCode}${clientInfo.phoneNumber.replace(/\s/g, '')}`
       : ""
-    
+
     const { error } = await updateProfile({
       first_name: clientInfo.firstName,
       last_name: clientInfo.lastName,
@@ -377,11 +379,11 @@ export function SettingsSection() {
     } catch (error) {
       console.error("[v0] Error en handleChangePassword:", error)
       toast({
-          title: "Error al cambiar contraseña",
-          description: "Ocurrió un error al cambiar la contraseña.",
-          variant: "destructive",
-          duration: 3000,
-        })
+        title: "Error al cambiar contraseña",
+        description: "Ocurrió un error al cambiar la contraseña.",
+        variant: "destructive",
+        duration: 3000,
+      })
     } finally {
       setChangingPassword(false)
     }
@@ -417,7 +419,7 @@ export function SettingsSection() {
     setResettingDevices(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 1500))
-      
+
       toast({
         variant: "success",
         title: "Dispositivos reseteados",
@@ -462,8 +464,8 @@ export function SettingsSection() {
               <User className="w-5 h-5 text-primary" />
               <CardTitle>Cuenta y Seguridad</CardTitle>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               onClick={() => setEditInfoOpen(true)}
@@ -487,13 +489,13 @@ export function SettingsSection() {
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground mb-1">Nombre completo</p>
                   <p className="text-base font-medium text-foreground">
-                    {profile?.first_name || profile?.last_name 
+                    {profile?.first_name || profile?.last_name
                       ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
                       : "No especificado"}
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-lg border border-primary/10">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                   <Mail className="w-5 h-5 text-primary" />
@@ -505,7 +507,7 @@ export function SettingsSection() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-lg border border-primary/10">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                   <Phone className="w-5 h-5 text-primary" />
@@ -542,7 +544,7 @@ export function SettingsSection() {
                 </div>
               </div>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground group-hover:text-primary transition-colors">
-                <path d="m9 18 6-6-6-6"/>
+                <path d="m9 18 6-6-6-6" />
               </svg>
             </button>
           </div>
@@ -607,8 +609,8 @@ export function SettingsSection() {
             />
           </div>
 
-          <Button 
-            onClick={handleSaveNotifications} 
+          <Button
+            onClick={handleSaveNotifications}
             className="w-full mt-4"
             disabled={savingNotifications}
           >
@@ -634,11 +636,13 @@ export function SettingsSection() {
               </div>
               <div>
                 <p className="text-base font-medium text-foreground">Dispositivos conectados</p>
-                <p className="text-sm text-muted-foreground">2 de 3 dispositivos activos</p>
+                <p className="text-sm text-muted-foreground">
+                  2 de {subscription?.plan?.max_screens || 1} dispositivos activos
+                </p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
               onClick={() => setShowDevicesDialog(true)}
@@ -647,7 +651,7 @@ export function SettingsSection() {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Al resetear los dispositivos, se desconectarán todos los dispositivos actualmente conectados. 
+            Al resetear los dispositivos, se desconectarán todos los dispositivos actualmente conectados.
             Deberás volver a iniciar sesión en cada uno de ellos.
           </p>
         </CardContent>
@@ -686,8 +690,8 @@ export function SettingsSection() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="new-password">Nueva Contraseña</Label>
-              <Input 
-                id="new-password" 
+              <Input
+                id="new-password"
                 type="password"
                 value={passwordData.new}
                 onChange={(e) => setPasswordData({ ...passwordData, new: e.target.value })}
@@ -700,8 +704,8 @@ export function SettingsSection() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password">Confirmar Nueva Contraseña</Label>
-              <Input 
-                id="confirm-password" 
+              <Input
+                id="confirm-password"
                 type="password"
                 value={passwordData.confirm}
                 onChange={(e) => setPasswordData({ ...passwordData, confirm: e.target.value })}
@@ -716,7 +720,7 @@ export function SettingsSection() {
             <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>
               Cancelar
             </Button>
-            <Button 
+            <Button
               onClick={handleChangePassword}
               disabled={changingPassword}
             >
@@ -739,7 +743,7 @@ export function SettingsSection() {
             <p className="text-sm text-muted-foreground mb-4">
               Para confirmar, escribe <strong>ELIMINAR</strong> en el campo de abajo:
             </p>
-            <Input 
+            <Input
               placeholder="ELIMINAR"
               value={deleteConfirmText}
               onChange={(e) => setDeleteConfirmText(e.target.value)}
@@ -749,8 +753,8 @@ export function SettingsSection() {
             <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
               Cancelar
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleDeleteAccount}
               disabled={deleteConfirmText !== "ELIMINAR"}
             >
@@ -775,10 +779,10 @@ export function SettingsSection() {
                 <User className="w-4 h-4" />
                 Nombre
               </Label>
-              <Input 
-                id="firstName" 
+              <Input
+                id="firstName"
                 value={clientInfo.firstName}
-                onChange={(e) => setClientInfo({...clientInfo, firstName: e.target.value})}
+                onChange={(e) => setClientInfo({ ...clientInfo, firstName: e.target.value })}
                 placeholder="Juan"
               />
             </div>
@@ -787,10 +791,10 @@ export function SettingsSection() {
                 <User className="w-4 h-4" />
                 Apellido
               </Label>
-              <Input 
-                id="lastName" 
+              <Input
+                id="lastName"
                 value={clientInfo.lastName}
-                onChange={(e) => setClientInfo({...clientInfo, lastName: e.target.value})}
+                onChange={(e) => setClientInfo({ ...clientInfo, lastName: e.target.value })}
                 placeholder="Pérez"
               />
             </div>
@@ -799,13 +803,13 @@ export function SettingsSection() {
                 <Mail className="w-4 h-4" />
                 Correo electrónico
               </Label>
-              <Input 
-                id="email" 
-                type="email" 
+              <Input
+                id="email"
+                type="email"
                 value={clientInfo.email}
                 onChange={(e) => {
                   const newEmail = e.target.value
-                  setClientInfo({...clientInfo, email: newEmail})
+                  setClientInfo({ ...clientInfo, email: newEmail })
                   if (newEmail && !validateEmail(newEmail)) {
                     setEmailError("Formato de correo inválido")
                   } else {
@@ -827,10 +831,10 @@ export function SettingsSection() {
                 WhatsApp
               </Label>
               <div className="flex gap-2">
-                <Select 
-                  value={clientInfo.countryCode} 
+                <Select
+                  value={clientInfo.countryCode}
                   onValueChange={(value) => {
-                    setClientInfo({...clientInfo, countryCode: value, phoneNumber: ""})
+                    setClientInfo({ ...clientInfo, countryCode: value, phoneNumber: "" })
                   }}
                 >
                   <SelectTrigger className="w-[140px]">
@@ -859,15 +863,15 @@ export function SettingsSection() {
                   </SelectContent>
                 </Select>
                 <div className="flex-1">
-                  <Input 
-                    id="whatsapp" 
-                    type="tel" 
+                  <Input
+                    id="whatsapp"
+                    type="tel"
                     value={clientInfo.phoneNumber}
                     onChange={(e) => {
                       const value = e.target.value.replace(/[^\d]/g, '')
                       const maxDigits = getMaxDigits()
                       if (value.length <= maxDigits) {
-                        setClientInfo({...clientInfo, phoneNumber: value})
+                        setClientInfo({ ...clientInfo, phoneNumber: value })
                       }
                     }}
                     placeholder={`${"9".repeat(getMaxDigits())}`}
@@ -911,7 +915,7 @@ export function SettingsSection() {
               <div className="text-sm">
                 <p className="font-medium text-foreground mb-1">Importante</p>
                 <p className="text-muted-foreground">
-                  Deberás volver a iniciar sesión en todos tus dispositivos después de resetearlos. 
+                  Deberás volver a iniciar sesión en todos tus dispositivos después de resetearlos.
                   Usa esta opción si sospechas que alguien más está usando tu cuenta.
                 </p>
               </div>
@@ -934,8 +938,8 @@ export function SettingsSection() {
             <Button variant="outline" onClick={() => setShowDevicesDialog(false)}>
               Cancelar
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleResetDevices}
               disabled={resettingDevices}
             >

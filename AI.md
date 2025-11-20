@@ -42,8 +42,8 @@ iptv/
 │   └── utils.ts           # Utility functions
 ├── scripts/               # Database migration scripts
 │   ├── 001_create_tables.sql
-│   ├── 002_insert_dummy_data.sql
-│   └── ...                # Sequential migrations
+│   ├── ...                # Sequential migrations
+│   └── 018_add_admin_update_policies.sql # Admin RLS policies
 ├── middleware.ts          # Auth middleware
 └── next.config.mjs        # Next.js configuration
 ```
@@ -51,11 +51,11 @@ iptv/
 ## Key Features
 
 ### Customer Dashboard (`/protected`)
-- **Home:** Overview of subscription status, billing dates, connected devices
+- **Home:** Overview of subscription status, billing dates, connected devices (real data from plan limits)
 - **Plans:** View and upgrade subscription plans
-- **Billing:** Invoice history and payment methods
+- **Billing:** Invoice history, payment methods, and next payment details
 - **Credentials:** IPTV access credentials (username, password, URLs)
-- **Settings:** Profile management, device management, notifications
+- **Settings:** Profile management, device management (real limits), notifications
 
 ### Admin Panel (`/admin`)
 - User management (create, edit, delete users)
@@ -68,8 +68,11 @@ iptv/
 
 ### Main Tables
 - `profiles` - User profile information
+  - Uses `first_name` and `last_name` (not `full_name`)
+  - `whatsapp` for contact info
 - `subscriptions` - Active user subscriptions
 - `plans` - Available IPTV plans
+  - `max_screens`: Limit of connected devices per plan
 - `credentials` - IPTV access credentials per user
 - `invoices` - Billing history
 - `notifications` - User notifications
@@ -127,6 +130,22 @@ pnpm start
 pnpm lint
 ```
 
+## Recent Updates & Fixes (Nov 2025)
+
+### Admin Panel Improvements
+- **Fixed Profile Updates:** Resolved schema mismatch (`full_name` vs `first_name`/`last_name`).
+- **RLS Policies:** Added `018_add_admin_update_policies.sql` to allow admins to UPDATE user data.
+- **UI Enhancements:** 
+  - Improved User Details Modal responsiveness and layout.
+  - Fixed scrolling issues in tabs.
+  - Improved input visibility and text handling in History tab.
+
+### Dashboard Enhancements
+- **Real Data Integration:**
+  - **Connected Devices:** Now uses `max_screens` from the `plans` table via `useSubscription` hook.
+  - **Billing:** Added "Next Payment" card showing real renewal date and amount.
+- **Hook Updates:** `useSubscription` now performs a JOIN with `plans` to fetch plan details.
+
 ## Common Issues & Solutions
 
 ### Infinite Rendering Loop
@@ -153,6 +172,21 @@ const fetchData = useCallback(async () => {
 useEffect(() => {
   fetchData()
 }, [fetchData])
+```
+
+### Supabase Joins
+```typescript
+// Example of fetching related data (e.g., Plan details in Subscription)
+const { data } = await supabase
+  .from("subscriptions")
+  .select(`
+    *,
+    plan:plans!subscriptions_plan_id_fkey (
+      id,
+      name,
+      max_screens
+    )
+  `)
 ```
 
 ### Server Components
@@ -187,7 +221,7 @@ export function Component() {
 
 ### Database Setup
 1. Create Supabase project
-2. Run SQL scripts in order (001-017) in Supabase SQL Editor
+2. Run SQL scripts in order (001-018) in Supabase SQL Editor
 3. Configure Row Level Security policies
 4. Add environment variables to deployment
 
