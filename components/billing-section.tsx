@@ -2,10 +2,11 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, CreditCard, FileText, CheckCircle2, Clock, XCircle } from 'lucide-react'
+import { Download, CreditCard, FileText, CheckCircle2, Clock, XCircle, Calendar, DollarSign } from 'lucide-react'
 import { useState, useEffect } from "react"
 import { useInvoices } from "@/hooks/use-invoices"
 import { useProfile } from "@/hooks/use-profile"
+import { useSubscription } from "@/hooks/use-subscription"
 import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
@@ -97,8 +98,9 @@ export function BillingSection() {
   const [editInfoOpen, setEditInfoOpen] = useState(false)
   const { invoices, loading: loadingInvoices } = useInvoices()
   const { profile, loading: loadingProfile, updateProfile } = useProfile()
+  const { subscription, loading: loadingSubscription } = useSubscription()
   const { toast } = useToast()
-  
+
   const [clientInfo, setClientInfo] = useState({
     firstName: "",
     lastName: "",
@@ -111,14 +113,14 @@ export function BillingSection() {
 
   const parseProfileForEdit = () => {
     if (!profile) return null
-    
+
     let countryCode = "+51"
     let phoneNumber = ""
-    
+
     if (profile.whatsapp) {
       const whatsappClean = profile.whatsapp.trim()
       const matchingCountry = countryCodes.find(c => whatsappClean.startsWith(c.code))
-      
+
       if (matchingCountry) {
         countryCode = matchingCountry.code
         phoneNumber = whatsappClean.substring(matchingCountry.code.length).replace(/\D/g, '')
@@ -126,7 +128,7 @@ export function BillingSection() {
         phoneNumber = whatsappClean.replace(/\D/g, '')
       }
     }
-    
+
     return {
       firstName: profile.first_name || "",
       lastName: profile.last_name || "",
@@ -177,7 +179,7 @@ export function BillingSection() {
     }
     return statusMap[status] || statusMap.pending
   }
-  
+
   const handleConnectMercadoPago = () => {
     toast({
       title: "MercadoPago",
@@ -185,7 +187,7 @@ export function BillingSection() {
     })
     setEditPaymentOpen(false)
   }
-  
+
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
@@ -199,7 +201,7 @@ export function BillingSection() {
   const getPhoneValidationMessage = () => {
     const country = countryCodes.find(c => c.code === clientInfo.countryCode)
     if (!country) return ""
-    
+
     if (clientInfo.phoneNumber && clientInfo.phoneNumber.length !== country.maxDigits) {
       return `Para ${country.country} se requieren exactamente ${country.maxDigits} dígitos`
     }
@@ -217,7 +219,7 @@ export function BillingSection() {
       })
       return
     }
-    
+
     setEmailError("")
 
     const validationMessage = getPhoneValidationMessage()
@@ -231,10 +233,10 @@ export function BillingSection() {
       return
     }
 
-    const fullWhatsApp = clientInfo.phoneNumber 
+    const fullWhatsApp = clientInfo.phoneNumber
       ? `${clientInfo.countryCode}${clientInfo.phoneNumber.replace(/\s/g, '')}`
       : ""
-    
+
     const { error } = await updateProfile({
       first_name: clientInfo.firstName,
       last_name: clientInfo.lastName,
@@ -261,7 +263,7 @@ export function BillingSection() {
   }
 
   const showLoadingSpinner = loadingInvoices && invoices.length === 0
-  
+
   if (showLoadingSpinner) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -280,6 +282,42 @@ export function BillingSection() {
         <p className="text-muted-foreground">Gestiona tu cuenta de facturación y pagos</p>
       </div>
 
+      {/* Información de Próximo Pago */}
+      {subscription && (
+        <Card className="p-6 border border-border bg-gradient-to-br from-primary/5 to-primary/10">
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-semibold text-foreground">Próximo Pago</h3>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex items-center gap-4 p-4 bg-background/80 rounded-lg border border-border">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Monto a Pagar</p>
+                <p className="text-2xl font-bold text-foreground">${subscription.price.toFixed(2)}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 p-4 bg-background/80 rounded-lg border border-border">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Fecha de Renovación</p>
+                <p className="text-lg font-semibold text-foreground">{formatDate(subscription.next_billing_date)}</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+            <p className="text-sm text-blue-800 dark:text-blue-400 flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+              <span>Tu suscripción se renovará automáticamente. El cargo se realizará el día de la renovación.</span>
+            </p>
+          </div>
+        </Card>
+      )}
+
       <Card className="p-6 border border-border bg-card">
         <div className="flex items-center gap-2 mb-4">
           <CreditCard className="w-5 h-5 text-primary" />
@@ -290,8 +328,8 @@ export function BillingSection() {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
                 <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none">
-                  <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#009EE3"/>
-                  <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="#009EE3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#009EE3" />
+                  <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="#009EE3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <div>
@@ -299,8 +337,8 @@ export function BillingSection() {
                 <p className="text-sm text-muted-foreground">Gestión de pagos conectada</p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="w-full sm:w-auto border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               onClick={() => setEditPaymentOpen(true)}
@@ -379,8 +417,8 @@ export function BillingSection() {
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
               <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center shadow-sm">
                 <svg viewBox="0 0 24 24" className="w-12 h-12" fill="none">
-                  <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#009EE3"/>
-                  <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="#009EE3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#009EE3" />
+                  <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="#009EE3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <div className="flex-1">
@@ -427,10 +465,10 @@ export function BillingSection() {
               <Label htmlFor="firstName" className="flex items-center gap-2">
                 Nombre
               </Label>
-              <Input 
-                id="firstName" 
+              <Input
+                id="firstName"
                 value={clientInfo.firstName}
-                onChange={(e) => setClientInfo({...clientInfo, firstName: e.target.value})}
+                onChange={(e) => setClientInfo({ ...clientInfo, firstName: e.target.value })}
                 placeholder="Juan"
               />
             </div>
@@ -438,10 +476,10 @@ export function BillingSection() {
               <Label htmlFor="lastName" className="flex items-center gap-2">
                 Apellido
               </Label>
-              <Input 
-                id="lastName" 
+              <Input
+                id="lastName"
                 value={clientInfo.lastName}
-                onChange={(e) => setClientInfo({...clientInfo, lastName: e.target.value})}
+                onChange={(e) => setClientInfo({ ...clientInfo, lastName: e.target.value })}
                 placeholder="Pérez"
               />
             </div>
@@ -449,13 +487,13 @@ export function BillingSection() {
               <Label htmlFor="email" className="flex items-center gap-2">
                 Correo electrónico
               </Label>
-              <Input 
-                id="email" 
-                type="email" 
+              <Input
+                id="email"
+                type="email"
                 value={clientInfo.email}
                 onChange={(e) => {
                   const newEmail = e.target.value
-                  setClientInfo({...clientInfo, email: newEmail})
+                  setClientInfo({ ...clientInfo, email: newEmail })
                   if (newEmail && !validateEmail(newEmail)) {
                     setEmailError("Formato de correo inválido")
                   } else {
@@ -476,10 +514,10 @@ export function BillingSection() {
                 WhatsApp
               </Label>
               <div className="flex gap-2">
-                <Select 
-                  value={clientInfo.countryCode} 
+                <Select
+                  value={clientInfo.countryCode}
                   onValueChange={(value) => {
-                    setClientInfo({...clientInfo, countryCode: value, phoneNumber: ""})
+                    setClientInfo({ ...clientInfo, countryCode: value, phoneNumber: "" })
                   }}
                 >
                   <SelectTrigger className="w-[140px]">
@@ -508,15 +546,15 @@ export function BillingSection() {
                   </SelectContent>
                 </Select>
                 <div className="flex-1">
-                  <Input 
-                    id="whatsapp" 
-                    type="tel" 
+                  <Input
+                    id="whatsapp"
+                    type="tel"
                     value={clientInfo.phoneNumber}
                     onChange={(e) => {
                       const value = e.target.value.replace(/[^\d]/g, '')
                       const maxDigits = getMaxDigits()
                       if (value.length <= maxDigits) {
-                        setClientInfo({...clientInfo, phoneNumber: value})
+                        setClientInfo({ ...clientInfo, phoneNumber: value })
                       }
                     }}
                     placeholder={`${"9".repeat(getMaxDigits())}`}
