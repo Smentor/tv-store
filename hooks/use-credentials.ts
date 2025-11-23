@@ -29,6 +29,13 @@ export function useCredentials() {
     const fetchCredentials = async () => {
       try {
         const supabase = createClient()
+
+        // Verify session is still valid
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) {
+          setLoading(false)
+          return
+        }
         const { data, error } = await supabase.from("credentials").select("*").eq("user_id", user.id).single()
 
         if (error && error.code !== "PGRST116") throw error

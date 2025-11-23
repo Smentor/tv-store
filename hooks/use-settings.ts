@@ -33,7 +33,14 @@ export function useSettings() {
     try {
       setLoading(true)
       console.log("[v0] Cargando settings para usuario:", user?.id)
-      
+
+      // Verify session is still valid
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setLoading(false)
+        return
+      }
+
       const { data, error } = await supabase
         .from('user_settings')
         .select('*')
@@ -46,7 +53,7 @@ export function useSettings() {
         setError(null)
         return
       }
-      
+
       console.log("[v0] Settings cargados:", data)
       setSettings(data)
     } catch (err: any) {
@@ -92,9 +99,9 @@ export function useSettings() {
           return { success: true, local: true }
         }
       }
-      
+
       setSettings(prev => ({ ...prev, ...updates }))
-      
+
       return { success: true }
     } catch (err: any) {
       console.error('[v0] Error updating settings:', err)

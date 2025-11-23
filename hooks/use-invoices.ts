@@ -29,6 +29,13 @@ export function useInvoices() {
     const fetchInvoices = async () => {
       try {
         const supabase = createClient()
+
+        // Verify session is still valid
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) {
+          setLoading(false)
+          return
+        }
         const { data, error } = await supabase
           .from("invoices")
           .select("*")

@@ -8,38 +8,58 @@ import { BillingSection } from "@/components/billing-section"
 import { CredentialsSection } from "@/components/credentials-section"
 import { SettingsSection } from "@/components/settings-section"
 import { createBrowserClient } from "@/lib/supabase/client"
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Shield } from 'lucide-react'
 
 export default function DashboardClient() {
-  const [currentView, setCurrentView] = useState("home")
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  // Initialize state from URL, default to 'home'
+  const [currentView, setCurrentView] = useState(searchParams.get('view') || 'home')
+
   const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
 
   useEffect(() => {
     checkAdminRole()
+
+    // Handle browser back/forward buttons
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search)
+      setCurrentView(params.get('view') || 'home')
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
   const checkAdminRole = async () => {
     const supabase = createBrowserClient()
     const { data: { user } } = await supabase.auth.getUser()
-    
+
     if (user) {
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', user.id)
         .single()
-      
+
       setIsAdmin(profile?.role === 'admin')
     }
     setLoading(false)
   }
 
+  const handleViewChange = (view: string) => {
+    setCurrentView(view)
+    // Update URL without triggering server-side navigation
+    const newUrl = `${window.location.pathname}?view=${view}`
+    window.history.pushState({}, '', newUrl)
+  }
+
   return (
-    <DashboardLayout currentView={currentView} setCurrentView={setCurrentView}>
+    <DashboardLayout currentView={currentView} setCurrentView={handleViewChange}>
       {!loading && isAdmin && (
         <div className="mb-4">
           <Button
@@ -51,13 +71,13 @@ export default function DashboardClient() {
           </Button>
         </div>
       )}
-      
+
       <div className="min-h-[600px]">
         <div style={{ display: currentView === "home" ? "block" : "none" }}>
-          <DashboardHome setCurrentView={setCurrentView} />
+          <DashboardHome setCurrentView={handleViewChange} />
         </div>
         <div style={{ display: currentView === "plans" ? "block" : "none" }}>
-          <PlansSection setCurrentView={setCurrentView} />
+          <PlansSection setCurrentView={handleViewChange} />
         </div>
         <div style={{ display: currentView === "billing" ? "block" : "none" }}>
           <BillingSection />

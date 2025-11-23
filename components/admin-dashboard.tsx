@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -11,15 +11,37 @@ import CouponsManagement from '@/components/admin/coupons-management'
 import UsersManagement from '@/components/admin/users-management'
 import AdminOverview from '@/components/admin/admin-overview'
 import { createBrowserClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function AdminDashboard() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Initialize state from URL, default to 'overview'
+  const [currentTab, setCurrentTab] = useState(searchParams.get('tab') || 'overview')
+
+  useEffect(() => {
+    // Handle browser back/forward buttons
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search)
+      setCurrentTab(params.get('tab') || 'overview')
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   const handleLogout = async () => {
     const supabase = createBrowserClient()
     await supabase.auth.signOut()
     router.push('/auth/login')
+  }
+
+  const handleTabChange = (value: string) => {
+    setCurrentTab(value)
+    // Update URL without triggering server-side navigation
+    const newUrl = `${window.location.pathname}?tab=${value}`
+    window.history.pushState({}, '', newUrl)
   }
 
   return (
@@ -41,7 +63,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs Navigation */}
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-6">
           <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0">
             <TabsList className="inline-flex h-auto w-auto p-1 min-w-full md:grid md:w-full md:grid-cols-5 gap-2">
               <TabsTrigger value="overview" className="flex items-center gap-2 px-4 py-3 md:py-2 md:px-3">

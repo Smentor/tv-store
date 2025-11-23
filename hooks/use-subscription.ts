@@ -41,6 +41,13 @@ export function useSubscription() {
       console.log('[useSubscription] Fetching subscription for user:', user.id)
       setLoading(true)
       const supabase = createClient()
+
+      // Verify session is still valid
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setLoading(false)
+        return
+      }
       const { data, error } = await supabase
         .from("subscriptions")
         .select(`

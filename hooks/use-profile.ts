@@ -29,7 +29,14 @@ export function useProfile() {
     try {
       setLoading(true)
       const supabase = createClient()
-      
+
+      // Verify session is still valid (handles race condition during logout)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setLoading(false)
+        return
+      }
+
       const { data, error: fetchError } = await supabase
         .from("profiles")
         .select("*")
@@ -39,7 +46,7 @@ export function useProfile() {
       if (fetchError) {
         throw fetchError
       }
-      
+
       setProfile(data)
       setError(null)
     } catch (err) {
@@ -55,7 +62,7 @@ export function useProfile() {
 
     try {
       const supabase = createClient()
-      
+
       const { error: updateError } = await supabase
         .from("profiles")
         .update(updates)
@@ -64,10 +71,10 @@ export function useProfile() {
       if (updateError) {
         throw updateError
       }
-      
+
       // Refetch profile after update
       await fetchProfile()
-      
+
       return { error: null }
     } catch (err) {
       console.error("Error updating profile:", err)

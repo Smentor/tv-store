@@ -4,9 +4,9 @@ import AdminDashboard from '@/components/admin-dashboard'
 
 export default async function AdminPage() {
   const supabase = await createClient()
-  
+
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) {
     redirect('/auth/login')
   }
@@ -19,7 +19,7 @@ export default async function AdminPage() {
     .single()
 
   if (!profile || profile.role !== 'admin') {
-    redirect('/protected')
+    redirect('/dashboard')
   }
 
   return <AdminDashboard />
