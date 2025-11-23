@@ -840,12 +840,10 @@ export default function UsersManagement() {
           isOpen={isDetailsOpen}
           onClose={() => setIsDetailsOpen(false)}
           onUpdateProfile={handleUpdateProfile}
-          onUpdateSubscription={handleUpdateSubscriptionDetails}
+          onUpdateSubscriptionDetails={handleUpdateSubscriptionDetails}
           onCreateSubscription={handleCreateSubscription}
-          onUpdateCredentials={handleUpdateIptvCredentials}
-          onUpdateStatus={handleUpdateStatus}
-          onSendNotification={handleSendNotification}
-          onSendEmail={handleSendEmail}
+          onUpdateIptvCredentials={handleUpdateIptvCredentials}
+          onUpdateSubscriptionStatus={handleUpdateStatus}
           onManualPasswordUpdate={handleManualPasswordUpdate}
           onSendPasswordReset={handleSendPasswordReset}
           userLogs={userLogs}
@@ -853,9 +851,6 @@ export default function UsersManagement() {
           userInvoices={userInvoices}
           loadingInvoices={loadingInvoices}
           availablePlans={availablePlans}
-          notificationForm={notificationForm}
-          setNotificationForm={setNotificationForm}
-          isSubmitting={isSubmitting}
         />
       )}
 
