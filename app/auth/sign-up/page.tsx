@@ -11,6 +11,14 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { AlertCircle, CheckCircle } from "lucide-react"
+import { countryCodes } from "@/lib/constants"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("")
@@ -18,7 +26,8 @@ export default function SignUpPage() {
   const [repeatPassword, setRepeatPassword] = useState("")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
-  const [whatsapp, setWhatsapp] = useState("")
+  const [countryCode, setCountryCode] = useState("+593")
+  const [phoneNumber, setPhoneNumber] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -41,13 +50,25 @@ export default function SignUpPage() {
       return
     }
 
+    // Validate phone number
+    const selectedCountry = countryCodes.find(c => c.code === countryCode)
+    if (phoneNumber && selectedCountry) {
+      if (phoneNumber.length !== selectedCountry.maxDigits) {
+        setError(`Para ${selectedCountry.country} se requieren exactamente ${selectedCountry.maxDigits} dígitos`)
+        setIsLoading(false)
+        return
+      }
+    }
+
+    const fullWhatsApp = phoneNumber ? `${countryCode}${phoneNumber}` : ""
+
     try {
       const result = await registerUser({
         email,
         password,
         first_name: firstName,
         last_name: lastName,
-        whatsapp
+        whatsapp: fullWhatsApp
       })
 
       if (!result.success) {
@@ -126,13 +147,41 @@ export default function SignUpPage() {
 
                   <div className="grid gap-2">
                     <Label htmlFor="whatsapp">WhatsApp</Label>
-                    <Input
-                      id="whatsapp"
-                      placeholder="+593..."
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value)}
-                      disabled={isLoading}
-                    />
+                    <div className="flex gap-2">
+                      <Select
+                        value={countryCode}
+                        onValueChange={setCountryCode}
+                        disabled={isLoading}
+                      >
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="País" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[300px]">
+                          {countryCodes.map((country) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              <span className="mr-2">{country.flag}</span>
+                              {country.code}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        id="whatsapp"
+                        type="tel"
+                        placeholder="Número"
+                        value={phoneNumber}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '')
+                          const selectedCountry = countryCodes.find(c => c.code === countryCode)
+                          const max = selectedCountry?.maxDigits || 15
+                          if (val.length <= max) {
+                            setPhoneNumber(val)
+                          }
+                        }}
+                        disabled={isLoading}
+                        className="flex-1"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid gap-2">
