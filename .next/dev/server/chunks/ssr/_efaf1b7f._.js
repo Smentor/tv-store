@@ -9109,9 +9109,10 @@ function AdminOverview() {
     }, []);
     const loadStats = async ()=>{
         const supabase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createBrowserClient"])();
-        const [subscriptionsResult, plansResult, promotionsResult, couponsResult] = await Promise.all([
-            supabase.from('subscriptions').select('user_id', {
-                count: 'exact'
+        const [profilesResult, plansResult, promotionsResult, couponsResult] = await Promise.all([
+            supabase.from('profiles').select('*', {
+                count: 'exact',
+                head: true
             }),
             supabase.from('plans').select('*', {
                 count: 'exact'
@@ -9123,9 +9124,8 @@ function AdminOverview() {
                 count: 'exact'
             }).eq('active', true)
         ]);
-        const uniqueUsers = subscriptionsResult.data ? new Set(subscriptionsResult.data.map((sub)=>sub.user_id)).size : 0;
         setStats({
-            totalUsers: uniqueUsers,
+            totalUsers: profilesResult.count || 0,
             activePlans: plansResult.count || plansResult.data?.length || 0,
             activePromotions: promotionsResult.count || promotionsResult.data?.length || 0,
             activeCoupons: couponsResult.count || couponsResult.data?.length || 0,
@@ -9170,12 +9170,12 @@ function AdminOverview() {
                 className: "animate-spin rounded-full h-12 w-12 border-b-2 border-primary"
             }, void 0, false, {
                 fileName: "[project]/components/admin/admin-overview.tsx",
-                lineNumber: 80,
+                lineNumber: 76,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/components/admin/admin-overview.tsx",
-            lineNumber: 79,
+            lineNumber: 75,
             columnNumber: 7
         }, this);
     }
@@ -9192,7 +9192,7 @@ function AdminOverview() {
                                 children: stat.title
                             }, void 0, false, {
                                 fileName: "[project]/components/admin/admin-overview.tsx",
-                                lineNumber: 90,
+                                lineNumber: 86,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9201,18 +9201,18 @@ function AdminOverview() {
                                     className: `h-5 w-5 ${stat.color}`
                                 }, void 0, false, {
                                     fileName: "[project]/components/admin/admin-overview.tsx",
-                                    lineNumber: 94,
+                                    lineNumber: 90,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/admin/admin-overview.tsx",
-                                lineNumber: 93,
+                                lineNumber: 89,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/admin/admin-overview.tsx",
-                        lineNumber: 89,
+                        lineNumber: 85,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -9221,23 +9221,23 @@ function AdminOverview() {
                             children: stat.value
                         }, void 0, false, {
                             fileName: "[project]/components/admin/admin-overview.tsx",
-                            lineNumber: 98,
+                            lineNumber: 94,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/admin/admin-overview.tsx",
-                        lineNumber: 97,
+                        lineNumber: 93,
                         columnNumber: 11
                     }, this)
                 ]
             }, stat.title, true, {
                 fileName: "[project]/components/admin/admin-overview.tsx",
-                lineNumber: 88,
+                lineNumber: 84,
                 columnNumber: 9
             }, this))
     }, void 0, false, {
         fileName: "[project]/components/admin/admin-overview.tsx",
-        lineNumber: 86,
+        lineNumber: 82,
         columnNumber: 5
     }, this);
 }

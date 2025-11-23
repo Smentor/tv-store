@@ -22,19 +22,15 @@ export default function AdminOverview() {
   const loadStats = async () => {
     const supabase = createBrowserClient()
 
-    const [subscriptionsResult, plansResult, promotionsResult, couponsResult] = await Promise.all([
-      supabase.from('subscriptions').select('user_id', { count: 'exact' }),
+    const [profilesResult, plansResult, promotionsResult, couponsResult] = await Promise.all([
+      supabase.from('profiles').select('*', { count: 'exact', head: true }),
       supabase.from('plans').select('*', { count: 'exact' }),
       supabase.from('promotions').select('*', { count: 'exact' }).eq('active', true),
       supabase.from('coupons').select('*', { count: 'exact' }).eq('active', true),
     ])
 
-    const uniqueUsers = subscriptionsResult.data 
-      ? new Set(subscriptionsResult.data.map(sub => sub.user_id)).size 
-      : 0
-
     setStats({
-      totalUsers: uniqueUsers,
+      totalUsers: profilesResult.count || 0,
       activePlans: plansResult.count || plansResult.data?.length || 0,
       activePromotions: promotionsResult.count || promotionsResult.data?.length || 0,
       activeCoupons: couponsResult.count || couponsResult.data?.length || 0,
