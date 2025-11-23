@@ -1,6 +1,0 @@
-{
-  "/admin/page": "app/admin/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/auth/sign-up/page": "app/auth/sign-up/page.js",
-  "/protected/page": "app/protected/page.js"
-}

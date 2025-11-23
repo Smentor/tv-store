@@ -1,3 +1,0 @@
-module.exports=[87110,a=>{a.n(a.i(1604))},86227,a=>{a.n(a.i(50008))},17663,a=>{a.n(a.i(68135))},41789,a=>{a.n(a.i(96061))},91104,a=>{a.n(a.i(42215))},46680,a=>{"use strict";a.i(80259);var b=a.i(48710),c=a.i(70183);async function d(){let a=await (0,c.createClient)(),{data:d}=await a.auth.getUser();d?.user&&(0,b.redirect)("/protected"),(0,b.redirect)("/auth/login")}a.s(["default",()=>d])}];
-
-//# sourceMappingURL=iptv_fb1c471e._.js.map
