@@ -1,0 +1,65 @@
+{
+  "node": {
+    "406180a501f2cec38b90065e6869c85164bc4f8f35": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": 49721,
+          "async": false,
+          "exportedName": "deleteUsers",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "deleteUsers",
+      "filename": "iptv/app/actions/admin-actions.ts"
+    },
+    "4055f5e515b19e983cd75d24bdb70cc170c476a2b2": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": 49721,
+          "async": false,
+          "exportedName": "createUser",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "createUser",
+      "filename": "iptv/app/actions/admin-actions.ts"
+    },
+    "60452541bb342ec454b8c602739f72fe3559355b55": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": 49721,
+          "async": false,
+          "exportedName": "updateUserPassword",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "updateUserPassword",
+      "filename": "iptv/app/actions/admin-actions.ts"
+    },
+    "400a6bbb7defd9ef61a2c3db3df5111735798e0794": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": 49721,
+          "async": false,
+          "exportedName": "createSubscription",
+          "filename": "iptv/app/actions/admin-actions.ts"
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "exportedName": "createSubscription",
+      "filename": "iptv/app/actions/admin-actions.ts"
+    }
+  },
+  "edge": {}
+}

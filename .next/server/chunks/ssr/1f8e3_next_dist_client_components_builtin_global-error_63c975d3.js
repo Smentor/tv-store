@@ -1,0 +1,3 @@
+module.exports=[91804,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(7937);a.n(d("[project]/iptv/node_modules/.pnpm/next@16.0.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/next/dist/client/components/builtin/global-error.js <module evaluation>"))},95943,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(7937);a.n(d("[project]/iptv/node_modules/.pnpm/next@16.0.0_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/next/dist/client/components/builtin/global-error.js"))},42215,a=>{"use strict";a.i(91804);var b=a.i(95943);a.n(b)}];
+
+//# sourceMappingURL=1f8e3_next_dist_client_components_builtin_global-error_63c975d3.js.map

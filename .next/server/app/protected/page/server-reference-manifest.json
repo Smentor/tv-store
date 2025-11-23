@@ -1,0 +1,20 @@
+{
+  "node": {
+    "40df9a50f8f7f384b9cf18a7f7a884249bbe6d64f0": {
+      "workers": {
+        "app/protected/page": {
+          "moduleId": 37819,
+          "async": false,
+          "exportedName": "deleteUserAccount",
+          "filename": "iptv/app/actions/auth-actions.ts"
+        }
+      },
+      "layer": {
+        "app/protected/page": "action-browser"
+      },
+      "exportedName": "deleteUserAccount",
+      "filename": "iptv/app/actions/auth-actions.ts"
+    }
+  },
+  "edge": {}
+}

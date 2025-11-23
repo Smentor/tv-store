@@ -55,3 +55,35 @@ export async function registerUser(data: any) {
         return { success: false, error: 'Error interno del servidor' }
     }
 }
+
+/**
+ * Deletes a user account and all associated data
+ * This MUST run on the server with service_role_key for security
+ */
+export async function deleteUserAccount(userId: string) {
+    try {
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!,
+            {
+                auth: {
+                    autoRefreshToken: false,
+                    persistSession: false
+                }
+            }
+        )
+
+        // Delete user from auth (this will cascade delete related data via DB triggers/policies)
+        const { error } = await supabase.auth.admin.deleteUser(userId)
+
+        if (error) {
+            console.error('Error deleting user:', error)
+            return { success: false, error: error.message }
+        }
+
+        return { success: true }
+    } catch (error) {
+        console.error('Error en deleteUserAccount:', error)
+        return { success: false, error: 'Error interno del servidor' }
+    }
+}

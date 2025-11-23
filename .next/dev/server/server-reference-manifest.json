@@ -1,5 +1,20 @@
 {
   "node": {
+    "40b65546487a310a529a766f83173f00e822f43548": {
+      "workers": {
+        "app/protected/page": {
+          "moduleId": "[project]/iptv/.next-internal/server/app/protected/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/auth-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteUserAccount",
+          "filename": "iptv/app/actions/auth-actions.ts"
+        }
+      },
+      "layer": {
+        "app/protected/page": "action-browser"
+      },
+      "filename": "iptv/app/actions/auth-actions.ts",
+      "exportedName": "deleteUserAccount"
+    },
     "40e2f6226fd60f4309c44cd8c2ebc1921b80368b36": {
       "workers": {
         "app/admin/page": {
@@ -59,21 +74,6 @@
       },
       "filename": "iptv/app/actions/admin-actions.ts",
       "exportedName": "createSubscription"
-    },
-    "40a15500937badc253a416b685bb0c413bf92444d8": {
-      "workers": {
-        "app/auth/sign-up/page": {
-          "moduleId": "[project]/iptv/.next-internal/server/app/auth/sign-up/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/auth-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
-          "async": false,
-          "exportedName": "registerUser",
-          "filename": "iptv/app/actions/auth-actions.ts"
-        }
-      },
-      "layer": {
-        "app/auth/sign-up/page": "action-browser"
-      },
-      "filename": "iptv/app/actions/auth-actions.ts",
-      "exportedName": "registerUser"
     }
   },
   "edge": {},

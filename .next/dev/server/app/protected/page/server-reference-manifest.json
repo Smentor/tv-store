@@ -1,4 +1,20 @@
 {
-  "node": {},
+  "node": {
+    "40b65546487a310a529a766f83173f00e822f43548": {
+      "workers": {
+        "app/protected/page": {
+          "moduleId": "[project]/iptv/.next-internal/server/app/protected/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/auth-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteUserAccount",
+          "filename": "iptv/app/actions/auth-actions.ts"
+        }
+      },
+      "layer": {
+        "app/protected/page": "action-browser"
+      },
+      "exportedName": "deleteUserAccount",
+      "filename": "iptv/app/actions/auth-actions.ts"
+    }
+  },
   "edge": {}
 }
