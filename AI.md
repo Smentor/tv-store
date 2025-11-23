@@ -1,4 +1,4 @@
-# MaxPlayer IPTV Dashboard - AI Context Documentation DEV
+# MaxPlayer IPTV Dashboard - AI Context Documentation DEV1
 
 ## Project Overview
 MaxPlayer IPTV Dashboard is a comprehensive Next.js 16 application for managing IPTV subscriptions. It provides a modern, responsive customer dashboard for viewing plans, billing, credentials, and settings, plus a powerful admin panel for managing users, subscriptions, and system operations.
