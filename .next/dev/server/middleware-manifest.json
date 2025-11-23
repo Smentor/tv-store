@@ -3,13 +3,13 @@
   "middleware": {
     "/": {
       "files": [
-        "server/edge/chunks/iptv_abee2f74._.js",
-        "server/edge/chunks/3ba3f_@supabase_realtime-js_dist_module_a480426e._.js",
-        "server/edge/chunks/330f3_@supabase_storage-js_dist_module_9b89eb84._.js",
-        "server/edge/chunks/46679_@supabase_auth-js_dist_module_b1c4adfb._.js",
-        "server/edge/chunks/91524__pnpm_bd9e6a3c._.js",
-        "server/edge/chunks/[root-of-the-server]__9cf521ef._.js",
-        "server/edge/chunks/turbopack-iptv_edge-wrapper_604bad9f.js"
+        "server/edge/chunks/_8fd472ef._.js",
+        "server/edge/chunks/a1279_@supabase_realtime-js_dist_module_25f010d6._.js",
+        "server/edge/chunks/dfeef_@supabase_storage-js_dist_module_9dc359b4._.js",
+        "server/edge/chunks/31944_@supabase_auth-js_dist_module_6798ca3c._.js",
+        "server/edge/chunks/node_modules__pnpm_28e9777f._.js",
+        "server/edge/chunks/[root-of-the-server]__f2b15f93._.js",
+        "server/edge/chunks/turbopack-edge-wrapper_92335138.js"
       ],
       "name": "middleware",
       "page": "/",
@@ -24,9 +24,9 @@
       "env": {
         "__NEXT_BUILD_ID": "development",
         "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "6NM0ZBxBR/nHUKofMrEguUQM2Ltvckdso/gMncOtLn8=",
-        "__NEXT_PREVIEW_MODE_ID": "3f47d1a6c83e603a4cdc6720c08bf437",
-        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "e618eddc64baef0c649eb26b54fe7539fc3f3bf96d65117e5bf7ad00cf8c6f00",
-        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "751874f4dc2707126cd84ca248bdbca05a6e951f5e88aa45f26be7320719c264"
+        "__NEXT_PREVIEW_MODE_ID": "14ea4f8c71f6b05469370783b738a426",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "e42f6c7767e48089992c81447b6293f39edfdc57287d55a510c5bb1e8411bbf1",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "340cacb11b2911186abfe98e8d1a3b4d1708efe597dc42c3a60c4e209a46a8ff"
       }
     }
   },

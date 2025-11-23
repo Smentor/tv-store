@@ -1,78 +1,78 @@
 {
   "node": {
-    "40b65546487a310a529a766f83173f00e822f43548": {
+    "408187267d36fdf3ed3f0f2ec2261818f948ed64d6": {
       "workers": {
         "app/protected/page": {
-          "moduleId": "[project]/iptv/.next-internal/server/app/protected/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/auth-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "moduleId": "[project]/.next-internal/server/app/protected/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "deleteUserAccount",
-          "filename": "iptv/app/actions/auth-actions.ts"
+          "filename": "app/actions/auth-actions.ts"
         }
       },
       "layer": {
         "app/protected/page": "action-browser"
       },
-      "filename": "iptv/app/actions/auth-actions.ts",
+      "filename": "app/actions/auth-actions.ts",
       "exportedName": "deleteUserAccount"
     },
-    "40e2f6226fd60f4309c44cd8c2ebc1921b80368b36": {
+    "4069bffd906f580317c83b27ebd47041d32fdffc67": {
       "workers": {
         "app/admin/page": {
-          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "moduleId": "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "deleteUsers",
-          "filename": "iptv/app/actions/admin-actions.ts"
+          "filename": "app/actions/admin-actions.ts"
         }
       },
       "layer": {
         "app/admin/page": "action-browser"
       },
-      "filename": "iptv/app/actions/admin-actions.ts",
+      "filename": "app/actions/admin-actions.ts",
       "exportedName": "deleteUsers"
     },
-    "40c088d894e31615d9e0988719ee5b15b073856c07": {
+    "403739e3b10e9955117a125dee4712007ffc7d872a": {
       "workers": {
         "app/admin/page": {
-          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "moduleId": "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "createUser",
-          "filename": "iptv/app/actions/admin-actions.ts"
+          "filename": "app/actions/admin-actions.ts"
         }
       },
       "layer": {
         "app/admin/page": "action-browser"
       },
-      "filename": "iptv/app/actions/admin-actions.ts",
+      "filename": "app/actions/admin-actions.ts",
       "exportedName": "createUser"
     },
-    "60857e9a2208ac027c8b6bf46806efc59e148114e5": {
+    "606f206989396dd759909841be0f849a913574d987": {
       "workers": {
         "app/admin/page": {
-          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "moduleId": "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "updateUserPassword",
-          "filename": "iptv/app/actions/admin-actions.ts"
+          "filename": "app/actions/admin-actions.ts"
         }
       },
       "layer": {
         "app/admin/page": "action-browser"
       },
-      "filename": "iptv/app/actions/admin-actions.ts",
+      "filename": "app/actions/admin-actions.ts",
       "exportedName": "updateUserPassword"
     },
-    "406818131b6f3e4ce9e3d9d10335154be68436dde8": {
+    "4074c2839094703f0b22dc44c5c952ba5260831330": {
       "workers": {
         "app/admin/page": {
-          "moduleId": "[project]/iptv/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/iptv/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "moduleId": "[project]/.next-internal/server/app/admin/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/admin-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "createSubscription",
-          "filename": "iptv/app/actions/admin-actions.ts"
+          "filename": "app/actions/admin-actions.ts"
         }
       },
       "layer": {
         "app/admin/page": "action-browser"
       },
-      "filename": "iptv/app/actions/admin-actions.ts",
+      "filename": "app/actions/admin-actions.ts",
       "exportedName": "createSubscription"
     }
   },
