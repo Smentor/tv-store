@@ -53,6 +53,6 @@ export interface NotificationBatch {
     title: string
     message: string
     type: string
-    target_count: string
+    target_count: number
     created_at: string
 }

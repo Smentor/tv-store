@@ -3158,6 +3158,10 @@
     user-select: none;
   }
 
+  .slide-in-from-right-5 {
+    --tw-enter-translate-x: calc(.05 * 100%);
+  }
+
   .zoom-in-95 {
     --tw-enter-scale: .95;
   }
@@ -4990,6 +4994,12 @@
   @media (min-width: 40rem) {
     .sm\:max-w-5xl {
       max-width: var(--container-5xl);
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .sm\:max-w-\[425px\] {
+      max-width: 425px;
     }
   }
 
