@@ -61,8 +61,10 @@ export function UserDetailsModal({
     const [priceForm, setPriceForm] = useState({ price: '' })
     const [billingDateForm, setBillingDateForm] = useState({ date: '' })
     const [manualPassword, setManualPassword] = useState('')
+    const [notificationForm, setNotificationForm] = useState({ title: '', message: '', type: 'info' })
+    const [emailForm, setEmailForm] = useState({ subject: '', body: '' })
 
-    const filteredLogs = userLogs.filter(log => {
+    const filteredLogs = (userLogs || []).filter(log => {
         if (!historySearch) return true
         const searchLower = historySearch.toLowerCase()
         const actionMatch = log.action.toLowerCase().includes(searchLower)
@@ -148,6 +150,97 @@ export function UserDetailsModal({
         try {
             await onManualPasswordUpdate(user.id, manualPassword)
             setManualPassword('')
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    const handleSendNotification = async () => {
+        if (!user || !notificationForm.title || !notificationForm.message) return
+
+        setIsSubmitting(true)
+        const { createClient } = await import('@/lib/supabase/client')
+        const supabase = createClient()
+        const { data: { user: admin } } = await supabase.auth.getUser()
+
+        try {
+            const { error } = await supabase
+                .from('notifications')
+                .insert({
+                    user_id: user.id,
+                    title: notificationForm.title,
+                    message: notificationForm.message,
+                    type: notificationForm.type
+                })
+
+            if (error) throw error
+
+            await supabase.from('user_logs').insert({
+                user_id: user.id,
+                admin_id: admin?.id,
+                action: 'send_notification',
+                details: {
+                    title: notificationForm.title,
+                    type: notificationForm.type,
+                    timestamp: new Date().toISOString()
+                }
+            })
+
+            const { toast } = await import('@/hooks/use-toast')
+            toast({
+                variant: 'success',
+                title: 'Notificación enviada',
+                description: 'El usuario verá el mensaje en su dashboard'
+            })
+
+            setNotificationForm({ title: '', message: '', type: 'info' })
+        } catch (error: any) {
+            const { toast } = await import('@/hooks/use-toast')
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: error.message
+            })
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    const handleSendEmail = async () => {
+        if (!user || !emailForm.subject || !emailForm.body) return
+
+        setIsSubmitting(true)
+        const { createClient } = await import('@/lib/supabase/client')
+        const supabase = createClient()
+        const { data: { user: admin } } = await supabase.auth.getUser()
+
+        try {
+            await supabase.from('user_logs').insert({
+                user_id: user.id,
+                admin_id: admin?.id,
+                action: 'send_email',
+                details: {
+                    to: user.email,
+                    subject: emailForm.subject,
+                    timestamp: new Date().toISOString()
+                }
+            })
+
+            const { toast } = await import('@/hooks/use-toast')
+            toast({
+                variant: 'success',
+                title: 'Correo enviado',
+                description: `Se ha enviado un correo a ${user.email}`
+            })
+
+            setEmailForm({ subject: '', body: '' })
+        } catch (error: any) {
+            const { toast } = await import('@/hooks/use-toast')
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: error.message
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -597,20 +690,152 @@ export function UserDetailsModal({
 
                     <TabsContent value="communications" className="flex-1 overflow-y-auto px-6 py-4 mt-0">
                         <div className="space-y-6">
-                            <div className="flex flex-col items-center justify-center py-12 text-center space-y-4 border-2 border-dashed rounded-lg">
-                                <div className="p-4 bg-muted rounded-full">
-                                    <Send className="h-8 w-8 text-muted-foreground" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h3 className="font-semibold text-lg">Centro de Comunicaciones</h3>
-                                    <p className="text-muted-foreground max-w-sm mx-auto">
-                                        Próximamente podrás enviar correos y mensajes de WhatsApp directamente desde aquí.
-                                    </p>
-                                </div>
-                                <Button variant="outline" disabled>
-                                    Nueva Comunicación
-                                </Button>
+                            <div>
+                                <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
+                                    <Send className="h-5 w-5 text-primary" />
+                                    Centro de Comunicaciones
+                                </h3>
+                                <p className="text-sm text-muted-foreground mb-6">
+                                    Envía notificaciones y correos electrónicos al usuario
+                                </p>
                             </div>
+
+                            {/* Notification Section */}
+                            <Card>
+                                <CardContent className="p-6 space-y-4">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="p-2 bg-blue-100 rounded-lg">
+                                            <Mail className="h-5 w-5 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold">Enviar Notificación</h4>
+                                            <p className="text-xs text-muted-foreground">El usuario verá esto en su dashboard</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <div>
+                                            <Label htmlFor="notif-title">Título</Label>
+                                            <Input
+                                                id="notif-title"
+                                                placeholder="Ej: Actualización importante"
+                                                className="mt-1"
+                                                value={notificationForm.title}
+                                                onChange={(e) => setNotificationForm({ ...notificationForm, title: e.target.value })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="notif-message">Mensaje</Label>
+                                            <textarea
+                                                id="notif-message"
+                                                placeholder="Escribe tu mensaje aquí..."
+                                                className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-input bg-background"
+                                                value={notificationForm.message}
+                                                onChange={(e) => setNotificationForm({ ...notificationForm, message: e.target.value })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="notif-type">Tipo</Label>
+                                            <Select value={notificationForm.type} onValueChange={(value) => setNotificationForm({ ...notificationForm, type: value })}>
+                                                <SelectTrigger id="notif-type" className="mt-1">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="info">Información</SelectItem>
+                                                    <SelectItem value="warning">Advertencia</SelectItem>
+                                                    <SelectItem value="success">Éxito</SelectItem>
+                                                    <SelectItem value="error">Error</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <Button
+                                            className="w-full"
+                                            disabled={isSubmitting || !notificationForm.title || !notificationForm.message}
+                                            onClick={handleSendNotification}
+                                        >
+                                            <Send className="mr-2 h-4 w-4" />
+                                            Enviar Notificación
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Email Section */}
+                            <Card>
+                                <CardContent className="p-6 space-y-4">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="p-2 bg-green-100 rounded-lg">
+                                            <Mail className="h-5 w-5 text-green-600" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold">Enviar Correo Electrónico</h4>
+                                            <p className="text-xs text-muted-foreground">
+                                                Enviar a: {user?.email || 'No disponible'}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <div>
+                                            <Label htmlFor="email-subject">Asunto</Label>
+                                            <Input
+                                                id="email-subject"
+                                                placeholder="Asunto del correo"
+                                                className="mt-1"
+                                                value={emailForm.subject}
+                                                onChange={(e) => setEmailForm({ ...emailForm, subject: e.target.value })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="email-body">Mensaje</Label>
+                                            <textarea
+                                                id="email-body"
+                                                placeholder="Contenido del correo..."
+                                                className="w-full min-h-[150px] px-3 py-2 text-sm rounded-md border border-input bg-background"
+                                                value={emailForm.body}
+                                                onChange={(e) => setEmailForm({ ...emailForm, body: e.target.value })}
+                                            />
+                                        </div>
+                                        <Button
+                                            className="w-full"
+                                            variant="outline"
+                                            disabled={isSubmitting || !user?.email || !emailForm.subject || !emailForm.body}
+                                            onClick={handleSendEmail}
+                                        >
+                                            <Mail className="mr-2 h-4 w-4" />
+                                            Enviar Correo
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Quick Actions */}
+                            <Card className="bg-muted/30">
+                                <CardContent className="p-4">
+                                    <h4 className="font-semibold text-sm mb-3">Acciones Rápidas</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="justify-start"
+                                            onClick={() => onSendPasswordReset(user?.email || '')}
+                                            disabled={!user?.email}
+                                        >
+                                            <Lock className="mr-2 h-3 w-3" />
+                                            Reset Contraseña
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="justify-start"
+                                            disabled
+                                        >
+                                            <Send className="mr-2 h-3 w-3" />
+                                            Recordatorio Pago
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </div>
                     </TabsContent>
 

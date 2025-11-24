@@ -19,7 +19,7 @@ export function useProfile() {
   const { user } = useAuth()
   const { logAction } = useUserLogger()
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false) // Start with false
   const [error, setError] = useState<string | null>(null)
 
   const fetchProfile = async () => {
@@ -32,18 +32,11 @@ export function useProfile() {
       setLoading(true)
       const supabase = createClient()
 
-      // Verify session is still valid (handles race condition during logout)
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        setLoading(false)
-        return
-      }
-
       const { data, error: fetchError } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", user.id)
-        .single()
+        .maybeSingle() // Use maybeSingle to avoid error when no row
 
       if (fetchError) {
         throw fetchError

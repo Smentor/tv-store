@@ -2,17 +2,18 @@
 
 import { Card } from "@/components/ui/card"
 import { ChevronRight, Check, AlertCircle, Tv, CreditCard, Key, HelpCircle, AlertTriangle, CheckCircle, Info, Monitor, Percent } from 'lucide-react'
-import { useSubscription } from "@/hooks/use-subscription"
+import { useDashboardData } from "@/hooks/use-dashboard-data"
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { NotificationsList } from "@/components/notifications-list"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface DashboardHomeProps {
   setCurrentView: (view: string) => void
 }
 
 export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
-  const { subscription, loading } = useSubscription()
+  const { subscription, loading } = useDashboardData()
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false)
   const [activePromotions, setActivePromotions] = useState<any[]>([])
 
@@ -67,9 +68,9 @@ export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
         icon: AlertTriangle,
         title: "Atención Requerida",
         message: "Tu suscripción no está activa. Por favor contacta a soporte o renueva tu plan.",
-        bgColor: "bg-red-50 dark:bg-red-950/30",
-        borderColor: "border-red-200 dark:border-red-900",
-        iconColor: "text-red-600 dark:text-red-400"
+        bgColor: "bg-red-50/50 dark:bg-red-950/10",
+        borderColor: "border-red-100 dark:border-red-900/50",
+        iconColor: "text-red-500 dark:text-red-400"
       }
     }
 
@@ -112,7 +113,45 @@ export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
   const AlertIcon = alertStatus.icon
 
   if (loading && !hasLoadedOnce) {
-    return <div className="text-center py-8">Cargando información...</div>
+    return (
+      <div className="space-y-8 animate-in fade-in duration-500">
+        <div>
+          <Skeleton className="h-10 w-64 mb-2" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+
+        {/* Notifications Skeleton */}
+        <div className="space-y-2">
+          <Skeleton className="h-14 w-full rounded-lg" />
+        </div>
+
+        {/* Status Cards Grid Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="p-6 border border-border bg-card">
+              <div className="flex items-start justify-between">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-8 w-32" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+                <Skeleton className="w-12 h-12 rounded-lg" />
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Quick Actions Skeleton */}
+        <div className="space-y-4">
+          <Skeleton className="h-7 w-40" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-20 w-full rounded-xl" />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -126,7 +165,7 @@ export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
       <NotificationsList />
 
       {activePromotions.length > 0 && (
-        <Card className="p-4 border-2 border-orange-500 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 shadow-lg">
+        <Card className="p-4 border border-orange-200/60 bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 shadow-sm">
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
               <Percent className="w-6 h-6 text-white" />

@@ -32,6 +32,10 @@ export function LogItem({ log }: { log: UserLog }) {
                 return { label: 'Reset de Dispositivos', icon: AlertCircle, color: 'text-red-500' }
             case 'send_password_reset':
                 return { label: 'Reset de Contraseña Enviado', icon: Mail, color: 'text-gray-500' }
+            case 'send_notification':
+                return { label: 'Notificación Enviada', icon: Mail, color: 'text-blue-500' }
+            case 'send_email':
+                return { label: 'Correo Enviado', icon: Mail, color: 'text-green-500' }
             case 'create_user':
                 return { label: 'Usuario Creado', icon: CheckCircle2, color: 'text-green-500' }
             default:
@@ -287,6 +291,40 @@ function LogContent({ action, details, isUserAction }: { action: string, details
                         {details.description && (
                             <div className="text-muted-foreground mt-1">{details.description}</div>
                         )}
+                    </div>
+                    {metadata}
+                </div>
+            )
+
+        case 'send_notification':
+            return (
+                <div>
+                    <div className="space-y-1 text-xs">
+                        <div className="flex gap-2">
+                            <span className="text-muted-foreground">Título:</span>
+                            <span className="font-medium">{details.title}</span>
+                        </div>
+                        <div className="flex gap-2">
+                            <span className="text-muted-foreground">Tipo:</span>
+                            <Badge variant="outline" className="capitalize">{details.type}</Badge>
+                        </div>
+                    </div>
+                    {metadata}
+                </div>
+            )
+
+        case 'send_email':
+            return (
+                <div>
+                    <div className="space-y-1 text-xs">
+                        <div className="flex gap-2">
+                            <span className="text-muted-foreground">Para:</span>
+                            <span className="font-medium">{details.to}</span>
+                        </div>
+                        <div className="flex gap-2">
+                            <span className="text-muted-foreground">Asunto:</span>
+                            <span className="font-medium">{details.subject}</span>
+                        </div>
                     </div>
                     {metadata}
                 </div>

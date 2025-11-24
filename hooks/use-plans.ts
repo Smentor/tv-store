@@ -22,6 +22,19 @@ export function usePlans() {
 
   useEffect(() => {
     async function fetchPlans() {
+      // Check cache first
+      const cached = sessionStorage.getItem('plans_data')
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached)
+        const age = Date.now() - timestamp
+        // Cache valid for 1 hour
+        if (age < 1000 * 60 * 60) {
+          setPlans(data)
+          setLoading(false)
+          return
+        }
+      }
+
       try {
         setLoading(true)
         const supabase = createClient()
@@ -31,7 +44,14 @@ export function usePlans() {
           .order("price", { ascending: true })
 
         if (error) throw error
+
         setPlans(data || [])
+        // Save to cache
+        sessionStorage.setItem('plans_data', JSON.stringify({
+          data: data || [],
+          timestamp: Date.now()
+        }))
+
         setError(null)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error fetching plans")

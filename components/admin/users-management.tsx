@@ -26,14 +26,20 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { createBrowserClient } from '@/lib/supabase/client'
-import { CheckSquare, Square, Trash2, AlertTriangle, Tag, Calendar, CreditCard, XCircle, DollarSign, Bell } from 'lucide-react'
+import { CheckSquare, Square, Trash2, AlertTriangle, Tag, Calendar, CreditCard, XCircle, DollarSign, Bell, History } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import { deleteUsers, createUser, updateUserPassword, createSubscription } from '@/app/actions/admin-actions'
+import {
+  deleteUsers, createUser, updateUserPassword, createSubscription,
+  updateUserProfile, updateIptvCredentials, updateSubscriptionDetails,
+  updateSubscriptionStatus, sendPasswordReset,
+  bulkUpdatePlans, bulkUpdateStatus, bulkUpdateDates
+} from '@/app/actions/admin-actions'
 import { UserDetailsModal } from './users/user-details-modal'
 import { UserProfile, Plan, UserLog, Invoice, NotificationBatch } from './users/types'
 import { useUsers } from './users/use-users'
 import { UsersFilters } from './users/users-filters'
 import { UsersTable } from './users/users-table'
+import { GlobalHistorySheet } from './users/global-history-sheet'
 
 export default function UsersManagement() {
   // Use Custom Hook for Data & Pagination
@@ -81,6 +87,9 @@ export default function UsersManagement() {
   const [userInvoices, setUserInvoices] = useState<Invoice[]>([])
   const [loadingInvoices, setLoadingInvoices] = useState(false)
 
+  const [isGlobalHistoryOpen, setIsGlobalHistoryOpen] = useState(false)
+  const [selectedHistoryIds, setSelectedHistoryIds] = useState<string[]>([])
+
   const [isCreateUserOpen, setIsCreateUserOpen] = useState(false)
   const [createUserForm, setCreateUserForm] = useState({
     email: '',
@@ -98,582 +107,77 @@ export default function UsersManagement() {
   const { toast } = useToast()
 
   useEffect(() => {
-    refreshUsers()
-    loadAvailablePlans()
-    loadNotificationBatches()
-  }, []) // refreshUsers is stable
-
-  const loadAvailablePlans = async () => {
-    const supabase = createBrowserClient()
-
-    const { data: plans, error } = await supabase
-      .from('plans')
-      .select('id, name, price')
-      .order('name')
-
-    if (!error && plans) {
-      setAvailablePlans(plans)
+    const fetchPlans = async () => {
+      const supabase = createBrowserClient()
+      const { data } = await supabase.from('plans').select('*')
+      if (data) setAvailablePlans(data)
     }
-  }
-
-  const loadNotificationBatches = async () => {
-    const supabase = createBrowserClient()
-    const { data, error } = await supabase
-      .from('notification_batches')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (data) setNotificationBatches(data)
-  }
-
-  const loadUserLogs = async (userId: string) => {
-    setLoadingLogs(true)
-    const supabase = createBrowserClient()
-    const { data, error } = await supabase
-      .from('user_logs')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-
-    if (data) {
-      setUserLogs(data)
-    }
-    setLoadingLogs(false)
-  }
-
-  const loadUserInvoices = async (userId: string) => {
-    setLoadingInvoices(true)
-    const supabase = createBrowserClient()
-    const { data, error } = await supabase
-      .from('invoices')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .limit(10)
-
-    if (data) {
-      setUserInvoices(data)
-    }
-    setLoadingInvoices(false)
-  }
-
-  const logAction = async (userId: string, action: string, details: any) => {
-    const supabase = createBrowserClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
-    await supabase.from('user_logs').insert({
-      user_id: userId,
-      admin_id: user?.id,
-      action,
-      details
-    })
-
-    // Reload logs if we are viewing them
-    if (selectedUser?.id === userId) {
-      loadUserLogs(userId)
-    }
-  }
-
-  const handleViewDetails = (user: UserProfile) => {
-    setSelectedUser(user)
-    setIsDetailsOpen(true)
-
-    loadUserLogs(user.id)
-    loadUserInvoices(user.id)
-  }
-
-  const handleUpdateProfile = async (userId: string, data: { first_name: string; last_name: string; email: string; whatsapp: string }) => {
-    // Check for changes
-    if (selectedUser) {
-      const hasChanges =
-        data.first_name !== (selectedUser.first_name || '') ||
-        data.last_name !== (selectedUser.last_name || '') ||
-        data.email !== (selectedUser.email || '') ||
-        data.whatsapp !== (selectedUser.whatsapp || '')
-
-      if (!hasChanges) {
-        toast({
-          title: 'Sin cambios',
-          description: 'No se detectaron cambios en el perfil.',
-        })
-        return
-      }
-    }
-
-    setIsSubmitting(true)
-    const supabase = createBrowserClient()
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
-        whatsapp: data.whatsapp
-      })
-      .eq('id', userId)
-
-    if (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error al actualizar perfil',
-        description: error.message,
-      })
-    } else {
-      toast({
-        variant: 'success',
-        title: 'Perfil actualizado',
-        description: 'Los datos del usuario han sido actualizados correctamente.',
-      })
-      refreshUsers()
-      if (selectedUser) {
-        logAction(userId, 'UPDATE_PROFILE', { previous: selectedUser, new: data })
-        setSelectedUser({ ...selectedUser, ...data })
-      }
-    }
-    setIsSubmitting(false)
-  }
+    fetchPlans()
+  }, [])
 
   const handleCreateUser = async () => {
-    if (!createUserForm.email || !createUserForm.password) {
-      toast({
-        variant: 'destructive',
-        title: 'Campos requeridos',
-        description: 'El email y la contraseña son obligatorios.',
-      })
-      return
-    }
-
     setIsSubmitting(true)
-
-    // Buscar el nombre del plan si se seleccionó uno
-    let planName = ''
-    if (createUserForm.plan_id) {
-      const plan = availablePlans.find(p => p.id === createUserForm.plan_id)
-      if (plan) planName = plan.name
-    }
-
-    if (createUserForm.password.length < 6) {
-      toast({
-        variant: 'destructive',
-        title: 'Contraseña muy corta',
-        description: 'La contraseña debe tener al menos 6 caracteres.',
-      })
-      return
-    }
-
-    const result = await createUser({
-      ...createUserForm,
-      plan_name: planName
-    })
+    const result = await createUser(createUserForm)
 
     if (result.success) {
-      toast({
-        variant: 'success',
-        title: 'Usuario creado',
-        description: 'El usuario ha sido creado exitosamente.',
-      })
+      toast({ variant: 'success', title: 'Usuario creado', description: 'El usuario ha sido creado exitosamente' })
       setIsCreateUserOpen(false)
       setCreateUserForm({
-        email: '',
-        password: '',
-        first_name: '',
-        last_name: '',
-        whatsapp: '',
-        plan_id: '',
-        plan_name: '',
-        price: '',
-        iptv_username: '',
-        iptv_password: ''
+        email: '', password: '', first_name: '', last_name: '', whatsapp: '',
+        plan_id: '', plan_name: '', price: '', iptv_username: '', iptv_password: ''
       })
       refreshUsers()
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Error al crear usuario',
-        description: result.error,
-      })
-    }
-    setIsSubmitting(false)
-  }
-
-
-  const handleUpdateSubscriptionDetails = async (userId: string, data: { plan_name: string; price: number; next_billing_date?: string }) => {
-    if (!selectedUser?.subscription?.id) return
-    setIsSubmitting(true)
-
-    const supabase = createBrowserClient()
-    const updates: any = {}
-    let hasChanges = false
-
-    // 1. Check Plan
-    if (data.plan_name && data.plan_name !== selectedUser.subscription.plan_name) {
-      const plan = availablePlans.find(p => p.name === data.plan_name)
-      if (plan) {
-        updates.plan_id = plan.id
-        updates.plan_name = plan.name
-        hasChanges = true
-      }
-    }
-
-    // 2. Check Price
-    if (data.price !== undefined && data.price !== selectedUser.subscription.price) {
-      updates.price = data.price
-      hasChanges = true
-    }
-
-    // 3. Check Date
-    if (data.next_billing_date) {
-      const newDate = new Date(data.next_billing_date)
-      const oldDate = new Date(selectedUser.subscription.next_billing_date)
-      if (newDate.toISOString().split('T')[0] !== oldDate.toISOString().split('T')[0]) {
-        updates.next_billing_date = newDate.toISOString()
-        hasChanges = true
-      }
-    }
-
-    if (!hasChanges) {
-      setIsSubmitting(false)
-      return
-    }
-
-    updates.updated_at = new Date().toISOString()
-
-    const { error } = await supabase
-      .from('subscriptions')
-      .update(updates)
-      .eq('id', selectedUser.subscription.id)
-
-    if (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error al actualizar suscripción',
-        description: error.message
-      })
-    } else {
-      toast({
-        variant: 'success',
-        title: 'Suscripción actualizada',
-        description: 'Los detalles de la suscripción han sido guardados.'
-      })
-
-      // Update local state optimistically
-      const updatedUser = {
-        ...selectedUser,
-        subscription: {
-          ...selectedUser.subscription,
-          ...updates
-        }
-      }
-      setSelectedUser(updatedUser)
-      refreshUsers() // Refresh list to show changes
-
-      logAction(userId, 'UPDATE_SUBSCRIPTION', { updates })
-    }
-    setIsSubmitting(false)
-  }
-
-  const handleCreateSubscription = async (userId: string, data: { plan_name: string; price: number }) => {
-    setIsSubmitting(true)
-    const selectedPlan = availablePlans.find(p => p.name === data.plan_name)
-
-    if (!selectedPlan) {
-      toast({ variant: 'destructive', title: 'Error', description: 'Plan no válido' })
-      setIsSubmitting(false)
-      return
-    }
-
-    const result = await createSubscription({
-      user_id: userId,
-      plan_id: selectedPlan.id,
-      plan_name: selectedPlan.name,
-      price: data.price || selectedPlan.price
-    })
-
-    if (result.success) {
-      toast({ variant: 'success', title: 'Suscripción creada exitosamente' })
-      refreshUsers()
-      setIsDetailsOpen(false)
     } else {
       toast({ variant: 'destructive', title: 'Error', description: result.error })
     }
     setIsSubmitting(false)
   }
 
-  const handleManualPasswordUpdate = async (userId: string, password: string) => {
-    setIsSubmitting(true)
-    const result = await updateUserPassword(userId, password)
-
-    if (result.success) {
-      toast({
-        variant: 'success',
-        title: 'Contraseña actualizada',
-        description: 'La contraseña del usuario ha sido cambiada exitosamente.',
-      })
-      logAction(userId, 'UPDATE_PASSWORD_MANUAL', { userId })
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: result.error,
-      })
-    }
-    setIsSubmitting(false)
-  }
-
-  const handleSendPasswordReset = async (email: string) => {
-    setIsSubmitting(true)
-    const supabase = createBrowserClient()
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/update-password`,
-    })
-
-    if (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error al enviar correo',
-        description: error.message
-      })
-    } else {
-      toast({
-        variant: 'success',
-        title: 'Correo enviado',
-        description: `Se ha enviado un correo de restablecimiento a ${email}`
-      })
-      if (selectedUser) {
-        await logAction(selectedUser.id, 'send_password_reset', {})
-      }
-    }
-    setIsSubmitting(false)
-  }
-
-  const handleUpdateIptvCredentials = async (userId: string, data: { username: string; password: string }) => {
-    // Check for changes
-    if (selectedUser?.credentials) {
-      const hasChanges =
-        data.username !== (selectedUser.credentials.username || '') ||
-        data.password !== (selectedUser.credentials.password || '')
-
-      if (!hasChanges) {
-        toast({
-          title: 'Sin cambios',
-          description: 'No se detectaron cambios en las credenciales.',
-        })
-        return
-      }
-    }
-
-    setIsSubmitting(true)
-    const supabase = createBrowserClient()
-
-    const oldUsername = selectedUser?.credentials?.username
-
-    const { error } = await supabase
-      .from('credentials')
-      .update({
-        username: data.username,
-        password: data.password,
-        updated_at: new Date().toISOString()
-      })
-      .eq('user_id', userId)
-
-    if (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error al actualizar',
-        description: error.message
-      })
-    } else {
-      toast({
-        variant: 'success',
-        title: 'Credenciales actualizadas',
-        description: 'Las credenciales IPTV han sido actualizadas correctamente'
-      })
-
-      refreshUsers()
-
-      if (selectedUser && selectedUser.id === userId) {
-        setSelectedUser({ ...selectedUser, credentials: { ...selectedUser.credentials!, username: data.username, password: data.password } })
-      }
-
-      logAction(userId, 'update_credentials', {
-        previous_username: oldUsername,
-        new_username: data.username,
-        password_updated: data.password !== selectedUser?.credentials?.password
-      })
-    }
-    setIsSubmitting(false)
-  }
-
-  const handleUpdateStatus = async (userId: string, status: string) => {
-    setIsSubmitting(true)
-    const supabase = createBrowserClient()
-
-    const previousStatus = selectedUser?.subscription?.status || 'unknown'
-
-    const { error } = await supabase
-      .from('subscriptions')
-      .update({
-        status: status,
-        updated_at: new Date().toISOString()
-      })
-      .eq('user_id', userId)
-
-    if (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error al actualizar estado',
-        description: error.message
-      })
-    } else {
-      toast({
-        variant: 'success',
-        title: 'Estado actualizado',
-        description: `El estado de la suscripción se ha actualizado a ${status}`
-      })
-
-      refreshUsers()
-
-      if (selectedUser && selectedUser.id === userId && selectedUser.subscription) {
-        setSelectedUser({ ...selectedUser, subscription: { ...selectedUser.subscription, status: status } })
-      }
-
-      logAction(userId, 'update_status', {
-        previous_status: previousStatus,
-        new_status: status
-      })
-    }
-    setIsSubmitting(false)
-  }
-
-  const handleSendNotification = async () => {
-    if (!selectedUser?.id) return
-
-    setIsSubmitting(true)
-    const supabase = createBrowserClient()
-
-    const { error } = await supabase
-      .from('notifications')
-      .insert({
-        user_id: selectedUser.id,
-        title: notificationForm.title,
-        message: notificationForm.message,
-        type: notificationForm.type
-      })
-
-    if (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error al enviar',
-        description: error.message
-      })
-    } else {
-      toast({
-        variant: 'success',
-        title: 'Notificación enviada',
-        description: 'El usuario verá el mensaje en su dashboard'
-      })
-      await logAction(selectedUser.id, 'send_notification', {
-        title: notificationForm.title,
-        type: notificationForm.type
-      })
-
-      setNotificationForm({ title: '', message: '', type: 'info' })
-    }
-    setIsSubmitting(false)
-  }
-
-  const handleSendEmail = async () => {
-    // Simulación de envío de correo ya que requiere integración backend
-    setIsSubmitting(true)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    toast({
-      variant: 'success',
-      title: 'Correo enviado',
-      description: `Se ha enviado un correo a ${selectedUser?.email}`
-    })
-    if (selectedUser?.id) {
-      await logAction(selectedUser.id, 'send_email', {
-        to: selectedUser.email,
-        subject: 'Simulado', // Placeholder
-        body: 'Simulado' // Placeholder
-      })
-    }
-    setIsSubmitting(false)
-  }
-
-  const toggleSelectAll = () => {
-    if (selectedIds.size === users.length) {
+  const handleSelectAll = () => {
+    if (selectedIds.size === users.length && users.length > 0) {
       setSelectedIds(new Set())
     } else {
       setSelectedIds(new Set(users.map(u => u.id)))
     }
   }
 
-  const toggleSelect = (id: string) => {
+  const handleSelectUser = (userId: string) => {
     const newSelected = new Set(selectedIds)
-    if (newSelected.has(id)) {
-      newSelected.delete(id)
+    if (newSelected.has(userId)) {
+      newSelected.delete(userId)
     } else {
-      newSelected.add(id)
+      newSelected.add(userId)
     }
     setSelectedIds(newSelected)
   }
+
+  // ... (rest of handlers)
+
+  // ... (inside return)
+
 
   const handleBulkNotify = async () => {
     if (selectedIds.size === 0) return
     setIsSubmitting(true)
 
     const supabase = createBrowserClient()
-
-    // 1. Create Batch
-    const { data: batch, error: batchError } = await supabase
-      .from('notification_batches')
-      .insert({
-        title: notificationForm.title,
-        message: notificationForm.message,
-        type: notificationForm.type,
-        target_count: selectedIds.size
-      })
-      .select()
-      .single()
-
-    if (batchError || !batch) {
-      toast({ variant: 'destructive', title: 'Error', description: 'No se pudo crear el envío masivo' })
-      setIsSubmitting(false)
-      return
-    }
-
-    // 2. Create Notifications
     const notifications = Array.from(selectedIds).map(userId => ({
       user_id: userId,
       title: notificationForm.title,
       message: notificationForm.message,
       type: notificationForm.type,
-      batch_id: batch.id
+      read: false
     }))
 
-    const { error: notifError } = await supabase
-      .from('notifications')
-      .insert(notifications)
+    const { error } = await supabase.from('notifications').insert(notifications)
 
-    if (notifError) {
-      toast({ variant: 'destructive', title: 'Error parcial', description: 'Algunas notificaciones fallaron' })
-    } else {
-      toast({ variant: 'success', title: 'Enviado', description: `Se enviaron ${selectedIds.size} notificaciones` })
+    if (!error) {
+      toast({ variant: 'success', title: 'Notificaciones enviadas', description: `Se enviaron ${selectedIds.size} notificaciones` })
       setIsBulkNotifyOpen(false)
       setNotificationForm({ title: '', message: '', type: 'info' })
       setSelectedIds(new Set())
-      loadNotificationBatches()
-      // Log action for each user
-      Array.from(selectedIds).forEach(userId => {
-        logAction(userId, 'receive_bulk_notification', {
-          batch_id: batch.id,
-          title: notificationForm.title
-        })
-      })
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: error.message })
     }
     setIsSubmitting(false)
   }
@@ -682,44 +186,15 @@ export default function UsersManagement() {
     if (selectedIds.size === 0 || !bulkPlan) return
     setIsSubmitting(true)
 
-    const supabase = createBrowserClient()
+    const result = await bulkUpdatePlans(Array.from(selectedIds), bulkPlan)
 
-    // Get plan details to update price as well (optional, but good practice)
-    const { data: planData } = await supabase
-      .from('plans')
-      .select('price')
-      .eq('name', bulkPlan)
-      .single()
-
-    const updates: any = {
-      plan_name: bulkPlan,
-      updated_at: new Date().toISOString()
-    }
-
-    if (planData) {
-      updates.price = planData.price
-    }
-
-    const { error } = await supabase
-      .from('subscriptions')
-      .update(updates)
-      .in('user_id', Array.from(selectedIds))
-
-    if (error) {
-      toast({ variant: 'destructive', title: 'Error', description: 'No se pudieron actualizar los planes' })
-    } else {
-      toast({ variant: 'success', title: 'Planes actualizados', description: `Se actualizó el plan de ${selectedIds.size} usuarios` })
+    if (result.success) {
+      toast({ variant: 'success', title: 'Planes actualizados', description: result.message || `Se actualizaron ${selectedIds.size} usuarios` })
       setIsBulkPlanOpen(false)
       setSelectedIds(new Set())
-      refreshUsers() // Reload to show changes
-      // Log action for each user
-      Array.from(selectedIds).forEach(userId => {
-        logAction(userId, 'change_plan', {
-          previous: 'N/A', // difficult to get previous for bulk
-          new: bulkPlan,
-          new_price: planData?.price
-        })
-      })
+      refreshUsers()
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: result.error })
     }
     setIsSubmitting(false)
   }
@@ -728,30 +203,36 @@ export default function UsersManagement() {
     if (selectedIds.size === 0 || !bulkStatus) return
     setIsSubmitting(true)
 
-    const supabase = createBrowserClient()
+    const result = await bulkUpdateStatus(Array.from(selectedIds), bulkStatus)
 
-    const { error } = await supabase
-      .from('subscriptions')
-      .update({
-        status: bulkStatus,
-        updated_at: new Date().toISOString()
-      })
-      .in('user_id', Array.from(selectedIds))
-
-    if (error) {
-      toast({ variant: 'destructive', title: 'Error', description: 'No se pudieron actualizar los estados' })
-    } else {
-      toast({ variant: 'success', title: 'Estados actualizados', description: `Se actualizó el estado de ${selectedIds.size} usuarios` })
+    if (result.success) {
+      if (result.count === 0) {
+        // Nadie fue actualizado
+        toast({
+          variant: 'default',
+          title: 'Sin cambios',
+          description: `No se pudo actualizar ningún usuario. ${result.skipped} ${result.skipped === 1 ? 'usuario no tiene' : 'usuarios no tienen'} un plan asignado.`
+        })
+      } else if (result.skipped && result.skipped > 0) {
+        // Algunos actualizados, algunos omitidos
+        toast({
+          variant: 'default',
+          title: 'Actualización parcial',
+          description: result.message
+        })
+      } else {
+        // Todos actualizados
+        toast({
+          variant: 'success',
+          title: 'Estados actualizados',
+          description: result.message
+        })
+      }
       setIsBulkStatusOpen(false)
       setSelectedIds(new Set())
-      refreshUsers() // Reload to show changes
-      // Log action for each user
-      Array.from(selectedIds).forEach(userId => {
-        logAction(userId, 'change_status', {
-          previous: 'N/A', // difficult to get previous for bulk
-          new: bulkStatus
-        })
-      })
+      refreshUsers()
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: result.error })
     }
     setIsSubmitting(false)
   }
@@ -760,24 +241,15 @@ export default function UsersManagement() {
     if (selectedIds.size === 0 || !bulkDate) return
     setIsSubmitting(true)
 
-    const supabase = createBrowserClient()
-    const newDate = new Date(bulkDate)
+    const result = await bulkUpdateDates(Array.from(selectedIds), bulkDate)
 
-    const { error } = await supabase
-      .from('subscriptions')
-      .update({
-        next_billing_date: newDate.toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .in('user_id', Array.from(selectedIds))
-
-    if (error) {
-      toast({ variant: 'destructive', title: 'Error', description: 'No se pudieron actualizar las fechas' })
-    } else {
-      toast({ variant: 'success', title: 'Fechas actualizadas', description: `Se actualizó la fecha de ${selectedIds.size} usuarios` })
+    if (result.success) {
+      toast({ variant: 'success', title: 'Fechas actualizadas', description: `Se actualizaron ${selectedIds.size} usuarios` })
       setIsBulkDateOpen(false)
       setSelectedIds(new Set())
       refreshUsers()
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: result.error })
     }
     setIsSubmitting(false)
   }
@@ -799,6 +271,33 @@ export default function UsersManagement() {
     setIsSubmitting(false)
   }
 
+  const handleUserClick = async (user: UserProfile) => {
+    setSelectedUser(user)
+    setIsDetailsOpen(true)
+    setLoadingLogs(true)
+    setLoadingInvoices(true)
+
+    const supabase = createBrowserClient()
+
+    // Fetch Logs
+    const { data: logs } = await supabase
+      .from('user_logs')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+    setUserLogs(logs || [])
+    setLoadingLogs(false)
+
+    // Fetch Invoices
+    const { data: invoices } = await supabase
+      .from('invoices')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+    setUserInvoices(invoices || [])
+    setLoadingInvoices(false)
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -811,39 +310,16 @@ export default function UsersManagement() {
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              {/* Bulk Actions */}
-              {selectedIds.size > 0 && (
-                <div className="flex gap-2 animate-in fade-in slide-in-from-right-5">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline">
-                        <CheckSquare className="mr-2 h-4 w-4" />
-                        {selectedIds.size} seleccionados
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Acciones Masivas</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setIsBulkNotifyOpen(true)}>
-                        <Bell className="mr-2 h-4 w-4" /> Enviar Notificación
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsBulkPlanOpen(true)}>
-                        <Tag className="mr-2 h-4 w-4" /> Cambiar Plan
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsBulkStatusOpen(true)}>
-                        <AlertTriangle className="mr-2 h-4 w-4" /> Cambiar Estado
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsBulkDateOpen(true)}>
-                        <Calendar className="mr-2 h-4 w-4" /> Cambiar Vencimiento
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setIsBulkDeleteOpen(true)} className="text-red-600">
-                        <Trash2 className="mr-2 h-4 w-4" /> Eliminar Usuarios
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              )}
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedHistoryIds([]) // Clear selection for global history
+                  setIsGlobalHistoryOpen(true)
+                }}
+              >
+                <History className="mr-2 h-4 w-4" />
+                Historial Global
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -864,9 +340,9 @@ export default function UsersManagement() {
             users={users}
             loading={loading}
             selectedIds={selectedIds}
-            toggleSelectAll={toggleSelectAll}
-            toggleSelect={toggleSelect}
-            onViewDetails={handleViewDetails}
+            toggleSelectAll={handleSelectAll}
+            toggleSelect={handleSelectUser}
+            onViewDetails={handleUserClick}
             page={page}
             setPage={setPage}
             pageSize={pageSize}
@@ -875,50 +351,71 @@ export default function UsersManagement() {
         </CardContent>
       </Card>
 
-      {/* User Details Modal */}
-      {selectedUser && (
-        <UserDetailsModal
-          user={selectedUser}
-          isOpen={isDetailsOpen}
-          onClose={() => setIsDetailsOpen(false)}
-          onUpdateProfile={handleUpdateProfile}
-          onUpdateSubscriptionDetails={handleUpdateSubscriptionDetails}
-          onCreateSubscription={handleCreateSubscription}
-          onUpdateIptvCredentials={handleUpdateIptvCredentials}
-          onUpdateSubscriptionStatus={handleUpdateStatus}
-          onManualPasswordUpdate={handleManualPasswordUpdate}
-          onSendPasswordReset={handleSendPasswordReset}
-          userLogs={userLogs}
-          loadingLogs={loadingLogs}
-          userInvoices={userInvoices}
-          loadingInvoices={loadingInvoices}
-          availablePlans={availablePlans}
-        />
-      )}
+      <UserDetailsModal
+        user={selectedUser}
+        isOpen={isDetailsOpen}
+        onClose={() => {
+          setIsDetailsOpen(false)
+          setSelectedUser(null)
+          setUserLogs([])
+          setUserInvoices([])
+        }}
+        availablePlans={availablePlans}
+        onUpdateProfile={async (userId, data) => {
+          await updateUserProfile(userId, data)
+          refreshUsers()
+        }}
+        onUpdateIptvCredentials={async (userId, data) => {
+          await updateIptvCredentials(userId, data)
+          refreshUsers()
+        }}
+        onUpdateSubscriptionDetails={async (userId, data) => {
+          await updateSubscriptionDetails(userId, data)
+          refreshUsers()
+        }}
+        onUpdateSubscriptionStatus={async (userId, status) => {
+          await updateSubscriptionStatus(userId, status)
+          refreshUsers()
+        }}
+        onCreateSubscription={async (userId, data) => {
+          await createSubscription({ ...data, user_id: userId, plan_id: availablePlans.find(p => p.name === data.plan_name)?.id })
+          refreshUsers()
+        }}
+        onManualPasswordUpdate={async (userId, password) => {
+          await updateUserPassword(userId, password)
+        }}
+        onSendPasswordReset={async (email) => {
+          await sendPasswordReset(email)
+        }}
+        userLogs={userLogs}
+        userInvoices={userInvoices}
+        loadingLogs={loadingLogs}
+        loadingInvoices={loadingInvoices}
+      />
 
       {/* Create User Modal */}
       <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Crear Nuevo Usuario</DialogTitle>
             <DialogDescription>
-              Ingresa los datos para registrar un nuevo cliente manualmente.
+              Ingresa los datos del nuevo usuario. Se creará una cuenta y perfil.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
+          <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="new-firstname">Nombre</Label>
+                <Label htmlFor="first_name">Nombre</Label>
                 <Input
-                  id="new-firstname"
+                  id="first_name"
                   value={createUserForm.first_name}
                   onChange={(e) => setCreateUserForm({ ...createUserForm, first_name: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="new-lastname">Apellido</Label>
+                <Label htmlFor="last_name">Apellido</Label>
                 <Input
-                  id="new-lastname"
+                  id="last_name"
                   value={createUserForm.last_name}
                   onChange={(e) => setCreateUserForm({ ...createUserForm, last_name: e.target.value })}
                 />
@@ -1070,6 +567,10 @@ export default function UsersManagement() {
             <DialogTitle>Cambio de Estado Masivo</DialogTitle>
             <DialogDescription>
               Selecciona el nuevo estado para {selectedIds.size} usuarios.
+              <br />
+              <span className="text-xs text-muted-foreground mt-2 block">
+                Nota: El cambio de estado solo se aplicará a usuarios que ya tengan un plan asignado.
+              </span>
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
@@ -1135,6 +636,109 @@ export default function UsersManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Floating Bulk Actions Bar */}
+      {selectedIds.size > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10 fade-in duration-300">
+          <div className="bg-background/95 backdrop-blur-md border shadow-xl rounded-full px-6 py-3 flex items-center gap-4 ring-1 ring-black/5">
+            <div className="flex items-center gap-2 border-r pr-4 mr-2">
+              <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-sm">
+                {selectedIds.size}
+              </div>
+              <span className="text-sm font-medium hidden sm:inline">Seleccionados</span>
+            </div>
+
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+                onClick={() => setIsBulkNotifyOpen(true)}
+                title="Enviar Notificación"
+              >
+                <Bell className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Notificar</span>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+                onClick={() => setIsBulkPlanOpen(true)}
+                title="Cambiar Plan"
+              >
+                <Tag className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Plan</span>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+                onClick={() => setIsBulkStatusOpen(true)}
+                title="Cambiar Estado"
+              >
+                <AlertTriangle className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Estado</span>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+                onClick={() => setIsBulkDateOpen(true)}
+                title="Cambiar Vencimiento"
+              >
+                <Calendar className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Vencimiento</span>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+                onClick={() => {
+                  setSelectedHistoryIds(Array.from(selectedIds))
+                  setIsGlobalHistoryOpen(true)
+                }}
+                title="Ver Historial"
+              >
+                <History className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Historial</span>
+              </Button>
+
+              <div className="w-px h-6 bg-border mx-1"></div>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 rounded-full text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors"
+                onClick={() => setIsBulkDeleteOpen(true)}
+                title="Eliminar Usuarios"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full ml-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                onClick={() => setSelectedIds(new Set())}
+                title="Cancelar selección"
+              >
+                <span className="sr-only">Cancelar</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <GlobalHistorySheet
+        isOpen={isGlobalHistoryOpen}
+        onClose={() => setIsGlobalHistoryOpen(false)}
+        userIds={selectedHistoryIds}
+      />
     </div>
   )
 }

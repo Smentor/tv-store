@@ -20,7 +20,7 @@ export function useSettings() {
   const supabase = createClient()
   const { user } = useAuth()
   const [settings, setSettings] = useState<UserSettings>(defaultSettings)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false) // Start with false, only load if needed
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -33,27 +33,25 @@ export function useSettings() {
     try {
       setLoading(true)
 
-      // Verify session is still valid
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        setLoading(false)
-        return
-      }
-
       const { data, error } = await supabase
         .from('user_settings')
         .select('*')
         .eq('user_id', user?.id)
-        .single()
+        .maybeSingle() // Use maybeSingle instead of single to avoid error when no row exists
 
       if (error) {
-        console.log('[v0] Settings table not found, using defaults:', error.message)
+        console.log('[v0] Settings fetch error, using defaults:', error.message)
         setSettings(defaultSettings)
         setError(null)
         return
       }
 
-      setSettings(data)
+      if (data) {
+        setSettings(data)
+      } else {
+        // No settings found, use defaults
+        setSettings(defaultSettings)
+      }
     } catch (err: any) {
       console.log('[v0] Error fetching settings, using defaults:', err)
       setSettings(defaultSettings)

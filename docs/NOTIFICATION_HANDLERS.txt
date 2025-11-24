@@ -1,0 +1,157 @@
+// Handlers para notificaciones y emails - Agregar al UserDetailsModal
+
+// 1. ESTADO (agregar después de const [manualPassword, setManualPassword] = useState(''))
+const [notificationForm, setNotificationForm] = useState({ title: '', message: '', type: 'info' })
+const [emailForm, setEmailForm] = useState({ subject: '', body: '' })
+
+// 2. HANDLERS (agregar después de handleManualPasswordSubmit)
+
+const handleSendNotification = async () => {
+    if (!user || !notificationForm.title || !notificationForm.message) return
+    
+    setIsSubmitting(true)
+    const { createClient } = await import('@/lib/supabase/client')
+    const supabase = createClient()
+    const { data: { user: admin } } = await supabase.auth.getUser()
+
+    try {
+        const { error } = await supabase
+            .from('notifications')
+            .insert({
+                user_id: user.id,
+                title: notificationForm.title,
+                message: notificationForm.message,
+                type: notificationForm.type
+            })
+
+        if (error) throw error
+
+        await supabase.from('user_logs').insert({
+            user_id: user.id,
+            admin_id: admin?.id,
+            action: 'send_notification',
+            details: {
+                title: notificationForm.title,
+                type: notificationForm.type,
+                timestamp: new Date().toISOString()
+            }
+        })
+
+        const { toast } = await import('@/hooks/use-toast')
+        toast.toast({
+            variant: 'success',
+            title: 'Notificación enviada',
+            description: 'El usuario verá el mensaje en su dashboard'
+        })
+
+        setNotificationForm({ title: '', message: '', type: 'info' })
+    } catch (error: any) {
+        const { toast } = await import('@/hooks/use-toast')
+        toast.toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: error.message
+        })
+    } finally {
+        setIsSubmitting(false)
+    }
+}
+
+const handleSendEmail = async () => {
+    if (!user || !emailForm.subject || !emailForm.body) return
+    
+    setIsSubmitting(true)
+    const { createClient } = await import('@/lib/supabase/client')
+    const supabase = createClient()
+    const { data: { user: admin } } = await supabase.auth.getUser()
+
+    try {
+        await supabase.from('user_logs').insert({
+            user_id: user.id,
+            admin_id: admin?.id,
+            action: 'send_email',
+            details: {
+                to: user.email,
+                subject: emailForm.subject,
+                timestamp: new Date().toISOString()
+            }
+        })
+
+        const { toast } = await import('@/hooks/use-toast')
+        toast.toast({
+            variant: 'success',
+            title: 'Correo enviado',
+            description: `Se ha enviado un correo a ${user.email}`
+        })
+
+        setEmailForm({ subject: '', body: '' })
+    } catch (error: any) {
+        const { toast } = await import('@/hooks/use-toast')
+        toast.toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: error.message
+        })
+    } finally {
+        setIsSubmitting(false)
+    }
+}
+
+// 3. BINDINGS PARA LA UI (reemplazar en la sección de comunicaciones)
+
+// Título de notificación:
+<Input
+    id="notif-title"
+    placeholder="Ej: Actualización importante"
+    className="mt-1"
+    value={notificationForm.title}
+    onChange={(e) => setNotificationForm({...notificationForm, title: e.target.value})}
+/>
+
+// Mensaje de notificación:
+<textarea
+    id="notif-message"
+    placeholder="Escribe tu mensaje aquí..."
+    className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-input bg-background"
+    value={notificationForm.message}
+    onChange={(e) => setNotificationForm({...notificationForm, message: e.target.value})}
+/>
+
+// Tipo de notificación:
+<Select 
+    value={notificationForm.type}
+    onValueChange={(value) => setNotificationForm({...notificationForm, type: value})}
+>
+
+// Botón enviar notificación:
+<Button 
+    className="w-full" 
+    disabled={isSubmitting || !notificationForm.title || !notificationForm.message}
+    onClick={handleSendNotification}
+>
+
+// Asunto de email:
+<Input
+    id="email-subject"
+    placeholder="Asunto del correo"
+    className="mt-1"
+    value={emailForm.subject}
+    onChange={(e) => setEmailForm({...emailForm, subject: e.target.value})}
+/>
+
+// Cuerpo de email:
+<textarea
+    id="email-body"
+    placeholder="Contenido del correo..."
+    className="w-full min-h-[150px] px-3 py-2 text-sm rounded-md border border-input bg-background"
+    value={emailForm.body}
+    onChange={(e) => setEmailForm({...emailForm, body: e.target.value})}
+/>
+
+// Botón enviar email:
+<Button 
+    className="w-full" 
+    variant="outline" 
+    disabled={isSubmitting || !user?.email || !emailForm.subject || !emailForm.body}
+    onClick={handleSendEmail}
+>
