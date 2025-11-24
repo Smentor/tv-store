@@ -26,7 +26,7 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Redirect to login if accessing protected routes without auth
+  // Redirect to login if accessing dashboard routes without auth
   if (!user && request.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/auth/login", request.url))
   }

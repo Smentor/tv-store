@@ -17,6 +17,7 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { createClient } from "@/lib/supabase/client"
 import { deleteUserAccount } from "@/app/actions/auth-actions"
+import { useUserLogger } from "@/hooks/use-user-logger"
 
 interface SecuritySettingsProps {
     user: any
@@ -24,6 +25,7 @@ interface SecuritySettingsProps {
 
 export function SecuritySettings({ user }: SecuritySettingsProps) {
     const { toast } = useToast()
+    const { logAction } = useUserLogger()
     const supabase = createClient()
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
@@ -103,6 +105,12 @@ export function SecuritySettings({ user }: SecuritySettingsProps) {
                     duration: 3000,
                 })
             } else {
+                // Log the password change action
+                await logAction('manual_password_update', {
+                    changed_by: 'user',
+                    method: 'self_service'
+                })
+
                 toast({
                     variant: "success",
                     title: "Contraseña actualizada",

@@ -43,8 +43,8 @@ iptv/
 │   ├── auth/
 │   │   ├── login/page.tsx        # Login page
 │   │   └── sign-up/page.tsx      # Public registration page
-│   ├── protected/
-│   │   └── page.tsx              # Customer dashboard (protected route)
+│   ├── dashboard/
+│   │   └── page.tsx              # Customer dashboard (dashboard route)
 │   ├── layout.tsx                # Root layout (fonts, analytics, toaster)
 │   ├── page.tsx                  # Root redirect (auth-based routing)
 │   └── globals.css               # Global styles & CSS variables
@@ -221,7 +221,7 @@ Batch notifications sent to users.
 
 ## Key Features
 
-### Customer Dashboard (`/protected`)
+### Customer Dashboard (`/dashboard`)
 
 #### 1. Home Section
 - **Subscription Overview:** Current plan, status badge, renewal date
@@ -318,12 +318,12 @@ Batch notifications sent to users.
 1. User enters email and password
 2. Supabase `signInWithPassword` called
 3. Session stored in cookies (SSR-compatible)
-4. Redirect to `/protected` (customer) or `/admin` (admin role)
+4. Redirect to `/dashboard` (customer) or `/admin` (admin role)
 
 ### Admin Access
 1. Middleware checks authentication on `/admin` route
 2. `app/admin/page.tsx` checks user role from `profiles` table
-3. Non-admin users redirected to `/protected`
+3. Non-admin users redirected to `/dashboard`
 4. Admin users see full admin panel
 
 ### Session Management
@@ -463,7 +463,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 
 # Optional
-NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL=http://localhost:3000/protected
+NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL=http://localhost:3000/dashboard
 ```
 
 ### Security Notes
@@ -894,7 +894,11 @@ Creates:
   - Removed unused `Tabs` import after modal extraction
   - Cleaned up orphaned state variables
 
-### Security Improvements
+### UI/UX Improvements
+- ✅ **Enhanced User History**: 
+  - Created `LogItem` component for structured, visual history logs
+  - Replaced raw JSON dumps with readable "Before → After" comparisons
+  - Added color-coded icons and badges for different action types
 - ✅ **Secure Account Deletion**: 
   - Moved `handleDeleteAccount` from client-side to server action (`deleteUserAccount` in `auth-actions.ts`)
   - Now uses `SUPABASE_SERVICE_ROLE_KEY` securely on the server

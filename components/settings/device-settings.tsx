@@ -13,6 +13,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
+import { useUserLogger } from "@/hooks/use-user-logger"
 
 interface DeviceSettingsProps {
     subscription: any
@@ -20,6 +21,7 @@ interface DeviceSettingsProps {
 
 export function DeviceSettings({ subscription }: DeviceSettingsProps) {
     const { toast } = useToast()
+    const { logAction } = useUserLogger()
     const [showDevicesDialog, setShowDevicesDialog] = useState(false)
     const [resettingDevices, setResettingDevices] = useState(false)
 
@@ -27,6 +29,12 @@ export function DeviceSettings({ subscription }: DeviceSettingsProps) {
         setResettingDevices(true)
         try {
             await new Promise(resolve => setTimeout(resolve, 1500))
+
+            await logAction('devices_reset', {
+                action_type: 'reset_all_devices',
+                devices_count: 2,
+                max_devices: subscription?.plan?.max_screens || 1
+            })
 
             toast({
                 variant: "success",

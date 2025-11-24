@@ -32,7 +32,6 @@ export function useSettings() {
   const fetchSettings = async () => {
     try {
       setLoading(true)
-      console.log("[v0] Cargando settings para usuario:", user?.id)
 
       // Verify session is still valid
       const { data: { session } } = await supabase.auth.getSession()
@@ -54,7 +53,6 @@ export function useSettings() {
         return
       }
 
-      console.log("[v0] Settings cargados:", data)
       setSettings(data)
     } catch (err: any) {
       console.log('[v0] Error fetching settings, using defaults:', err)

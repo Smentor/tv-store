@@ -15,7 +15,7 @@ Este documento resume la evolución del proyecto desde su concepción hasta el e
 
 - **Infraestructura Base:**
   - Configuración de `createBrowserClient` y `createServerClient` para manejo de sesiones seguro (SSR).
-  - Implementación de `middleware.ts` para protección de rutas (`/protected`, `/admin`).
+  - Implementación de `middleware.ts` para protección de rutas (`/dashboard`, `/admin`).
   - Diseño de esquema de base de datos: tablas `profiles`, `subscriptions`, `plans`, `invoices`, `credentials`.
 
 ---
@@ -84,6 +84,9 @@ El componente principal había superado las 1500 líneas.
 
 - **Corrección de Bugs**:
   - Arreglo en la actualización de estados de suscripción (botones "Activo/Inactivo" no funcionaban por error en props).
+
+- **Mejoras de UI/UX**:
+  - **Historial de Usuario Mejorado**: Se reemplazó la vista de JSON crudo en el modal de usuarios por un componente visual (`LogItem`) que muestra cambios detallados (antes/después), iconos por tipo de acción y badges de estado.
 
 - **Documentación**:
   - Actualización exhaustiva de **`AI.md`** para reflejar la arquitectura final.

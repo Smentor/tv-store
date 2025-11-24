@@ -29,16 +29,13 @@ export function useSubscription() {
   const { user } = useAuth()
 
   const fetchSubscription = useCallback(async () => {
-    console.log('[useSubscription] fetchSubscription called, user:', user?.email || 'No user')
     if (!user) {
-      console.log('[useSubscription] No user, skipping fetch')
       setSubscription(null)
       setLoading(false)
       return
     }
 
     try {
-      console.log('[useSubscription] Fetching subscription for user:', user.id)
       setLoading(true)
       const supabase = createClient()
 
@@ -65,7 +62,6 @@ export function useSubscription() {
         .single()
 
       if (error && error.code !== "PGRST116") throw error
-      console.log('[useSubscription] Subscription fetched:', data?.plan_name || 'No subscription')
       setSubscription(data || null)
       setError(null)
     } catch (err) {

@@ -9,10 +9,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { User, Mail, Tv, CreditCard, Lock, Save, RefreshCw, DollarSign, Plus, Shield, FileText, Send, History } from 'lucide-react'
+import { User, Mail, Tv, CreditCard, Lock, Save, RefreshCw, DollarSign, Plus, Shield, FileText, Send, History, Search } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { UserProfile, Plan, UserLog, Invoice } from './types'
+import { LogItem } from './log-item'
 
 interface UserDetailsModalProps {
     user: UserProfile | null
@@ -51,6 +52,7 @@ export function UserDetailsModal({
 }: UserDetailsModalProps) {
     const [activeTab, setActiveTab] = useState('details')
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [historySearch, setHistorySearch] = useState('')
 
     // Forms State
     const [profileForm, setProfileForm] = useState({ first_name: '', last_name: '', email: '', whatsapp: '' })
@@ -59,6 +61,14 @@ export function UserDetailsModal({
     const [priceForm, setPriceForm] = useState({ price: '' })
     const [billingDateForm, setBillingDateForm] = useState({ date: '' })
     const [manualPassword, setManualPassword] = useState('')
+
+    const filteredLogs = userLogs.filter(log => {
+        if (!historySearch) return true
+        const searchLower = historySearch.toLowerCase()
+        const actionMatch = log.action.toLowerCase().includes(searchLower)
+        const detailsMatch = JSON.stringify(log.details).toLowerCase().includes(searchLower)
+        return actionMatch || detailsMatch
+    })
 
     useEffect(() => {
         if (user) {
@@ -606,33 +616,33 @@ export function UserDetailsModal({
 
                     <TabsContent value="history" className="flex-1 overflow-y-auto px-6 py-4 mt-0">
                         <div className="space-y-4">
-                            <h3 className="font-semibold flex items-center gap-2 text-primary border-b pb-2">
-                                <History className="h-4 w-4" /> Registro de Actividad
-                            </h3>
+                            <div className="flex items-center justify-between border-b pb-2">
+                                <h3 className="font-semibold flex items-center gap-2 text-primary">
+                                    <History className="h-4 w-4" /> Registro de Actividad
+                                </h3>
+                                <div className="relative w-64">
+                                    <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Buscar en historial..."
+                                        className="h-8 pl-8"
+                                        value={historySearch}
+                                        onChange={(e) => setHistorySearch(e.target.value)}
+                                    />
+                                </div>
+                            </div>
                             <div className="space-y-4">
                                 {loadingLogs ? (
                                     <div className="text-center py-8 text-muted-foreground">Cargando historial...</div>
-                                ) : userLogs.length > 0 ? (
-                                    <div className="relative pl-4 border-l-2 border-muted space-y-6">
-                                        {userLogs.map((log) => (
-                                            <div key={log.id} className="relative">
-                                                <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-primary/20 border-2 border-primary" />
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-medium text-sm">{log.action}</span>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {format(new Date(log.created_at), 'dd MMM yyyy HH:mm', { locale: es })}
-                                                        </span>
-                                                    </div>
-                                                    <div className="text-xs text-muted-foreground bg-muted/30 p-2 rounded border font-mono">
-                                                        {JSON.stringify(log.details, null, 2)}
-                                                    </div>
-                                                </div>
-                                            </div>
+                                ) : filteredLogs.length > 0 ? (
+                                    <div className="relative pl-4 border-l-2 border-muted space-y-8">
+                                        {filteredLogs.map((log) => (
+                                            <LogItem key={log.id} log={log} />
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-8 text-muted-foreground">No hay actividad registrada</div>
+                                    <div className="text-center py-8 text-muted-foreground">
+                                        {historySearch ? 'No se encontraron resultados' : 'No hay actividad registrada'}
+                                    </div>
                                 )}
                             </div>
                         </div>

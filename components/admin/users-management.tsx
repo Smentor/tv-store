@@ -183,6 +183,23 @@ export default function UsersManagement() {
   }
 
   const handleUpdateProfile = async (userId: string, data: { first_name: string; last_name: string; email: string; whatsapp: string }) => {
+    // Check for changes
+    if (selectedUser) {
+      const hasChanges =
+        data.first_name !== (selectedUser.first_name || '') ||
+        data.last_name !== (selectedUser.last_name || '') ||
+        data.email !== (selectedUser.email || '') ||
+        data.whatsapp !== (selectedUser.whatsapp || '')
+
+      if (!hasChanges) {
+        toast({
+          title: 'Sin cambios',
+          description: 'No se detectaron cambios en el perfil.',
+        })
+        return
+      }
+    }
+
     setIsSubmitting(true)
     const supabase = createBrowserClient()
 
@@ -204,6 +221,7 @@ export default function UsersManagement() {
       })
     } else {
       toast({
+        variant: 'success',
         title: 'Perfil actualizado',
         description: 'Los datos del usuario han sido actualizados correctamente.',
       })
@@ -251,6 +269,7 @@ export default function UsersManagement() {
 
     if (result.success) {
       toast({
+        variant: 'success',
         title: 'Usuario creado',
         description: 'El usuario ha sido creado exitosamente.',
       })
@@ -333,6 +352,7 @@ export default function UsersManagement() {
       })
     } else {
       toast({
+        variant: 'success',
         title: 'Suscripción actualizada',
         description: 'Los detalles de la suscripción han sido guardados.'
       })
@@ -371,7 +391,7 @@ export default function UsersManagement() {
     })
 
     if (result.success) {
-      toast({ title: 'Suscripción creada exitosamente' })
+      toast({ variant: 'success', title: 'Suscripción creada exitosamente' })
       refreshUsers()
       setIsDetailsOpen(false)
     } else {
@@ -386,6 +406,7 @@ export default function UsersManagement() {
 
     if (result.success) {
       toast({
+        variant: 'success',
         title: 'Contraseña actualizada',
         description: 'La contraseña del usuario ha sido cambiada exitosamente.',
       })
@@ -428,6 +449,21 @@ export default function UsersManagement() {
   }
 
   const handleUpdateIptvCredentials = async (userId: string, data: { username: string; password: string }) => {
+    // Check for changes
+    if (selectedUser?.credentials) {
+      const hasChanges =
+        data.username !== (selectedUser.credentials.username || '') ||
+        data.password !== (selectedUser.credentials.password || '')
+
+      if (!hasChanges) {
+        toast({
+          title: 'Sin cambios',
+          description: 'No se detectaron cambios en las credenciales.',
+        })
+        return
+      }
+    }
+
     setIsSubmitting(true)
     const supabase = createBrowserClient()
 
@@ -463,7 +499,8 @@ export default function UsersManagement() {
 
       logAction(userId, 'update_credentials', {
         previous_username: oldUsername,
-        new_username: data.username
+        new_username: data.username,
+        password_updated: data.password !== selectedUser?.credentials?.password
       })
     }
     setIsSubmitting(false)
@@ -472,6 +509,8 @@ export default function UsersManagement() {
   const handleUpdateStatus = async (userId: string, status: string) => {
     setIsSubmitting(true)
     const supabase = createBrowserClient()
+
+    const previousStatus = selectedUser?.subscription?.status || 'unknown'
 
     const { error } = await supabase
       .from('subscriptions')
@@ -500,7 +539,10 @@ export default function UsersManagement() {
         setSelectedUser({ ...selectedUser, subscription: { ...selectedUser.subscription, status: status } })
       }
 
-      logAction(userId, 'update_status', { status })
+      logAction(userId, 'update_status', {
+        previous_status: previousStatus,
+        new_status: status
+      })
     }
     setIsSubmitting(false)
   }

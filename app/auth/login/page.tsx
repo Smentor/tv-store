@@ -26,11 +26,25 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       if (error) throw error
+
+      if (data.user) {
+        await supabase.from('user_logs').insert({
+          user_id: data.user.id,
+          admin_id: null,
+          action: 'user_login',
+          details: {
+            user_agent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+            login_method: 'email_password'
+          }
+        })
+      }
+
       router.push("/dashboard")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Error en login")

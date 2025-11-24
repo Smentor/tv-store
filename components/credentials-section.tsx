@@ -4,12 +4,12 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react"
-import { useCredentials } from "@/hooks/use-credentials"
+import { useDashboardData } from "@/hooks/use-dashboard-data"
 
 export function CredentialsSection() {
   const [showPassword, setShowPassword] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
-  const { credentials, loading } = useCredentials()
+  const { credentials, loading } = useDashboardData()
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text)

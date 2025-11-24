@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useAuth } from "@/hooks/use-auth"
+import { useUserLogger } from "@/hooks/use-user-logger"
 
 interface Profile {
   id: string
@@ -16,6 +17,7 @@ interface Profile {
 
 export function useProfile() {
   const { user } = useAuth()
+  const { logAction } = useUserLogger()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -63,6 +65,14 @@ export function useProfile() {
     try {
       const supabase = createClient()
 
+      // Store previous values for logging
+      const previousProfile = profile ? {
+        first_name: profile.first_name,
+        last_name: profile.last_name,
+        email: profile.email,
+        whatsapp: profile.whatsapp
+      } : null
+
       const { error: updateError } = await supabase
         .from("profiles")
         .update(updates)
@@ -70,6 +80,19 @@ export function useProfile() {
 
       if (updateError) {
         throw updateError
+      }
+
+      // Log the action (user updating their own profile)
+      if (previousProfile) {
+        const logResult = await logAction('UPDATE_PROFILE', {
+          previous: previousProfile,
+          new: { ...previousProfile, ...updates },
+          changed_by: 'user'
+        })
+
+        if (!logResult.success) {
+          console.error('Failed to log profile update:', logResult.error)
+        }
       }
 
       // Refetch profile after update
@@ -88,3 +111,4 @@ export function useProfile() {
 
   return { profile, loading, error, updateProfile, refetch: fetchProfile }
 }
+

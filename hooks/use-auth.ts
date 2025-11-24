@@ -12,12 +12,10 @@ export function useAuth() {
     const supabase = createClient()
 
     const getUser = async () => {
-      console.log('[useAuth] Fetching user...')
       try {
         const {
           data: { user },
         } = await supabase.auth.getUser()
-        console.log('[useAuth] User fetched:', user?.email || 'No user')
         setUser(user)
       } finally {
         setLoading(false)

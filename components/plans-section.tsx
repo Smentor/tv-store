@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Check, Zap, Crown, Rocket, X, Tag, Percent } from 'lucide-react'
-import { useSubscription } from "@/hooks/use-subscription"
+import { useDashboardData } from "@/hooks/use-dashboard-data"
 import { usePlans } from "@/hooks/use-plans"
 import { createClient } from "@/lib/supabase/client"
 import { useToast } from "@/hooks/use-toast"
+import { useUserLogger } from "@/hooks/use-user-logger"
 import {
   Dialog,
   DialogContent,
@@ -38,9 +39,10 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
   const [activePromotions, setActivePromotions] = useState<any[]>([])
   const [loadingCoupon, setLoadingCoupon] = useState(false)
 
-  const { subscription, refetch } = useSubscription()
+  const { subscription, refetch } = useDashboardData()
   const { plans, loading: loadingPlans } = usePlans()
   const { toast } = useToast()
+  const { logAction } = useUserLogger()
 
   const currentPlanId = subscription?.plan_id || "basic"
 
@@ -131,6 +133,14 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
     }
 
     setAppliedCoupon(data)
+
+    await logAction('apply_coupon', {
+      coupon_code: data.code,
+      discount: data.discount_percentage ? `${data.discount_percentage}%` : `$${data.discount_amount}`,
+      discount_type: data.discount_percentage ? 'percentage' : 'fixed',
+      discount_value: data.discount_percentage || data.discount_amount
+    })
+
     toast({
       title: "Cupón aplicado",
       description: `Has obtenido un descuento de ${data.discount_percentage ? `${data.discount_percentage}%` : `S/ ${data.discount_amount}`}`,
@@ -185,6 +195,7 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
     try {
       const supabase = createClient()
       const selectedPlanData = plans.find((p) => p.id === selectedPlan)
+      const currentPlanData = plans.find((p) => p.id === currentPlanId)
 
       if (!selectedPlanData) throw new Error("Plan no encontrado")
 
@@ -215,6 +226,23 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
         status: "paid",
         description: `Cambio a ${selectedPlanData.name}${appliedCoupon ? ` (Cupón: ${appliedCoupon.code})` : ''}${activePromotions.length > 0 ? ` (Promoción aplicada)` : ''}`,
         invoice_date: new Date().toISOString(),
+      })
+
+      await logAction('change_plan', {
+        previous_plan: currentPlanData?.name || currentPlanId,
+        new_plan: selectedPlanData.name,
+        previous_price: subscription.price,
+        new_price: finalPrice,
+        change_type: finalPrice > subscription.price ? 'upgrade' : 'downgrade',
+        coupon_applied: appliedCoupon?.code || null,
+        promotion_applied: activePromotions.length > 0 ? activePromotions[0].name : null
+      })
+
+      await logAction('payment_successful', {
+        amount: finalPrice,
+        payment_type: 'plan_change',
+        plan_name: selectedPlanData.name,
+        description: `Pago por cambio de plan a ${selectedPlanData.name}`
       })
 
       await refetch()
@@ -349,8 +377,8 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
             <Card
               key={plan.id}
               className={`relative overflow-hidden transition-all duration-300 flex flex-col ${isCurrent
-                  ? "border-2 border-primary shadow-lg"
-                  : "border border-border hover:border-primary/50 hover:shadow-md"
+                ? "border-2 border-primary shadow-lg"
+                : "border border-border hover:border-primary/50 hover:shadow-md"
                 }`}
             >
               {isCurrent && (
@@ -418,8 +446,8 @@ export function PlansSection({ setCurrentView }: PlansSectionProps) {
                   onClick={() => handlePlanChange(plan.id)}
                   disabled={isProcessing || isCurrent}
                   className={`w-full ${isCurrent
-                      ? "bg-gradient-to-r from-primary to-accent text-white cursor-default"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                    ? "bg-gradient-to-r from-primary to-accent text-white cursor-default"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90"
                     }`}
                 >
                   {isCurrent ? (

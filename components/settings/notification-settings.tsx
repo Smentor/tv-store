@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Bell } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
+import { useUserLogger } from "@/hooks/use-user-logger"
 
 interface NotificationSettingsProps {
     settings: any
@@ -15,6 +16,7 @@ interface NotificationSettingsProps {
 
 export function NotificationSettings({ settings, updateSettings }: NotificationSettingsProps) {
     const { toast } = useToast()
+    const { logAction } = useUserLogger()
     const [notifications, setNotifications] = useState({
         email: true,
         whatsapp: true,
@@ -37,14 +39,22 @@ export function NotificationSettings({ settings, updateSettings }: NotificationS
     const handleSaveNotifications = async () => {
         setSavingNotifications(true)
         try {
-            const result = await updateSettings({
+            const newSettings = {
                 email_notifications: notifications.email,
                 whatsapp_notifications: notifications.whatsapp,
                 renewal_reminder: notifications.renewalReminder,
                 plan_changes_notifications: notifications.planChanges,
-            })
+            }
+
+            const result = await updateSettings(newSettings)
 
             if (result.success) {
+                // Log the notification settings change
+                await logAction('update_notification_settings', {
+                    changes: newSettings,
+                    changed_by: 'user'
+                })
+
                 toast({
                     variant: "success",
                     title: "Configuración guardada",
