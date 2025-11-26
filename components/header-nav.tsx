@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { LogOut, Shield, ChevronDown } from 'lucide-react'
+import { LogOut, Shield, ChevronDown, Moon, Sun, HelpCircle } from 'lucide-react'
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from 'next/navigation'
 import type { User as SupabaseUser } from "@supabase/supabase-js"
+import { useTheme } from "next-themes"
+import { Switch } from "@/components/ui/switch"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 interface HeaderNavProps {
   user?: SupabaseUser | null
@@ -25,9 +28,12 @@ interface HeaderNavProps {
 export function HeaderNav({ user, profile }: HeaderNavProps) {
   const router = useRouter()
   const supabase = createClient()
+  const { theme, setTheme } = useTheme()
   const [subscription, setSubscription] = useState<any>(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     if (user) {
       fetchSubscription()
     }
@@ -90,14 +96,19 @@ export function HeaderNav({ user, profile }: HeaderNavProps) {
   const isAdmin = profile?.role === 'admin'
   const statusBadge = getStatusBadge()
 
+  // Evitar hidratación incorrecta
+  if (!mounted) {
+    return null
+  }
+
   return (
-    <header className="border-b border-border bg-card">
+    <header className="border-b border-border bg-card sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-sm">
             <span className="text-white font-bold text-lg">📺</span>
           </div>
-          <h1 className="text-lg font-bold text-foreground">MaxPlayer IPTV</h1>
+          <h1 className="text-lg font-bold text-foreground hidden sm:block">MaxPlayer IPTV</h1>
         </div>
 
         <div className="flex items-center gap-3">
@@ -117,75 +128,92 @@ export function HeaderNav({ user, profile }: HeaderNavProps) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="flex items-center gap-2.5 hover:bg-accent/50 px-2 py-1.5 h-auto rounded-lg transition-all"
+                className="group flex items-center gap-3 hover:bg-muted/50 px-2 sm:px-3 py-2 h-auto rounded-full border border-transparent hover:border-border transition-all duration-200"
               >
                 <div className="relative">
-                  <Avatar className="h-9 w-9 ring-2 ring-primary/20 ring-offset-2 ring-offset-background transition-all hover:ring-primary/40">
+                  <Avatar className="h-8 w-8 sm:h-9 sm:w-9 ring-2 ring-background shadow-sm transition-transform group-hover:scale-105">
                     <AvatarImage src={user?.user_metadata?.avatar_url} alt={userName} />
-                    <AvatarFallback className="bg-gradient-to-br from-primary via-primary to-secondary text-white font-bold text-sm">
+                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-xs">
                       {userInitials}
                     </AvatarFallback>
                   </Avatar>
                   {subscription?.status === 'active' && (
-                    <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-green-500 ring-2 ring-background" />
+                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-background" />
                   )}
                 </div>
-                <div className="hidden md:flex flex-col items-start gap-0.5">
-                  <p className="text-sm font-medium leading-none">{userName}</p>
-                  <Badge
-                    variant={statusBadge.variant}
-                    className="text-[10px] h-3.5 px-1.5 font-medium"
-                  >
-                    {statusBadge.label}
-                  </Badge>
+
+                <div className="hidden md:flex flex-col items-start gap-0.5 text-left">
+                  <p className="text-sm font-medium leading-none max-w-[120px] truncate text-foreground group-hover:text-primary transition-colors">
+                    {userName}
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] h-4 px-1.5 font-medium bg-secondary/50 text-secondary-foreground hover:bg-secondary/70 border-0"
+                    >
+                      {statusBadge.label}
+                    </Badge>
+                  </div>
                 </div>
-                <ChevronDown className="hidden md:block w-4 h-4 text-muted-foreground ml-0.5" />
+                <ChevronDown className="hidden md:block w-4 h-4 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-72 p-2">
-              <DropdownMenuLabel className="px-2 py-3">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <Avatar className="h-12 w-12 ring-2 ring-primary/20">
-                      <AvatarImage src={user?.user_metadata?.avatar_url} alt={userName} />
-                      <AvatarFallback className="bg-gradient-to-br from-primary via-primary to-secondary text-white font-bold text-base">
-                        {userInitials}
-                      </AvatarFallback>
-                    </Avatar>
-                    {subscription?.status === 'active' && (
-                      <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-green-500 ring-2 ring-background" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">{userName}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                    {subscription?.plan?.name && (
-                      <div className="mt-1.5 flex items-center gap-1.5">
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                        <span className="text-xs font-medium text-foreground">{subscription.plan.name}</span>
-                      </div>
-                    )}
-                  </div>
+
+            <DropdownMenuContent align="end" className="w-72 p-2" sideOffset={8}>
+              {/* Perfil Compacto */}
+              <div className="flex items-center gap-3 p-3 mb-1">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-muted-foreground">Conectado como</p>
+                  <p className="text-sm font-semibold truncate text-foreground mt-0.5">{user?.email}</p>
+                  {subscription?.plan?.name && (
+                    <div className="mt-2 inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                      {subscription.plan.name}
+                    </div>
+                  )}
                 </div>
-              </DropdownMenuLabel>
+              </div>
+
+              <DropdownMenuSeparator className="my-1" />
+
+              {/* Selector de Tema con Switch */}
+              <div className="flex items-center justify-between px-3 py-2 rounded-md hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-2.5">
+                  {theme === 'dark' ? (
+                    <Moon className="h-4 w-4 text-indigo-500" />
+                  ) : (
+                    <Sun className="h-4 w-4 text-amber-500" />
+                  )}
+                  <span className="text-sm font-medium">Modo Oscuro</span>
+                </div>
+                <Switch
+                  checked={theme === 'dark'}
+                  onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                  className="data-[state=checked]:bg-indigo-500"
+                />
+              </div>
+
+              <DropdownMenuItem className="rounded-md cursor-pointer py-2.5 mt-1">
+                <HelpCircle className="mr-2 h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Ayuda y Soporte</span>
+              </DropdownMenuItem>
 
               {isAdmin && (
                 <>
-                  <DropdownMenuSeparator className="my-2" />
+                  <DropdownMenuSeparator className="my-1" />
                   <DropdownMenuItem
                     onClick={() => router.push('/admin')}
-                    className="rounded-md cursor-pointer"
+                    className="rounded-md cursor-pointer py-2.5 focus:bg-accent"
                   >
-                    <Shield className="mr-2 h-4 w-4 text-primary" />
+                    <Shield className="mr-2 h-4 w-4 text-indigo-500" />
                     <span className="font-medium">Panel Admin</span>
                   </DropdownMenuItem>
                 </>
               )}
 
-              <DropdownMenuSeparator className="my-2" />
+              <DropdownMenuSeparator className="my-1" />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="rounded-md cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20"
+                className="rounded-md cursor-pointer py-2.5 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20"
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 <span className="font-medium">Cerrar sesión</span>

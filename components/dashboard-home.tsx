@@ -166,18 +166,18 @@ export function DashboardHome({ setCurrentView }: DashboardHomeProps) {
 
       {activePromotions.length > 0 && (
         <Card className="p-4 border border-orange-200/60 bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 shadow-sm">
-          <div className="flex items-start gap-3">
-            <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="flex flex-col sm:flex-row items-start gap-3">
+            <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mb-2 sm:mb-0">
               <Percent className="w-6 h-6 text-white" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               <h3 className="font-bold text-orange-900 dark:text-orange-100 mb-1 text-lg">
                 🎉 ¡Promoción Activa! {activePromotions[0].name}
               </h3>
               <p className="text-sm text-orange-700 dark:text-orange-200 mb-3">
                 {activePromotions[0].description}
               </p>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md">
                   {activePromotions[0].discount_percentage ? (
                     <>{activePromotions[0].discount_percentage}% de descuento</>
