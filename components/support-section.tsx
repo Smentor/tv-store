@@ -52,7 +52,7 @@ export function SupportSection() {
     }
 
     return (
-        <div className="space-y-8 max-w-5xl mx-auto">
+        <div className="space-y-8">
             <div>
                 <h2 className="text-3xl font-bold text-foreground mb-2">Centro de Ayuda</h2>
                 <p className="text-muted-foreground">Estamos aquí para ayudarte con cualquier problema</p>

@@ -193,10 +193,17 @@ export function HeaderNav({ user, profile }: HeaderNavProps) {
               </div>
 
               <button
-                className="w-full flex items-center gap-2 rounded-md cursor-pointer py-2.5 mt-1 px-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors outline-none focus:bg-accent focus:text-accent-foreground"
+                type="button"
+                style={{
+                  backgroundColor: 'transparent',
+                  background: 'transparent',
+                  backgroundImage: 'none',
+                  color: 'inherit',
+                  border: 'none'
+                }}
+                className="support-button !bg-transparent !text-foreground w-full flex items-center gap-2 rounded-md cursor-pointer py-2.5 mt-1 px-2 text-sm hover:!bg-muted/80 hover:!text-foreground transition-colors outline-none focus:!bg-muted/80 focus:!text-foreground"
                 onClick={() => {
                   router.push('/dashboard?view=support')
-                  // Cerrar el menú manualmente si es necesario, aunque al navegar debería cerrarse
                 }}
               >
                 <HelpCircle className="mr-2 h-4 w-4 text-muted-foreground" />
