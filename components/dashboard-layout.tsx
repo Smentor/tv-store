@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Home, Tv, FileText, Key, Settings, Menu } from 'lucide-react'
+import { Home, Tv, FileText, Key, Settings, Menu, HelpCircle } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { useState } from "react"
@@ -21,6 +21,7 @@ export function DashboardLayout({ children, currentView, setCurrentView }: Dashb
     { id: "billing", label: "Facturación", icon: FileText },
     { id: "credentials", label: "Credenciales", icon: Key },
     { id: "settings", label: "Configuración", icon: Settings },
+    { id: "support", label: "Soporte", icon: HelpCircle },
   ]
 
   const NavContent = () => (

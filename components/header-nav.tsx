@@ -192,10 +192,16 @@ export function HeaderNav({ user, profile }: HeaderNavProps) {
                 />
               </div>
 
-              <DropdownMenuItem className="rounded-md cursor-pointer py-2.5 mt-1">
+              <button
+                className="w-full flex items-center gap-2 rounded-md cursor-pointer py-2.5 mt-1 px-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors outline-none focus:bg-accent focus:text-accent-foreground"
+                onClick={() => {
+                  router.push('/dashboard?view=support')
+                  // Cerrar el menú manualmente si es necesario, aunque al navegar debería cerrarse
+                }}
+              >
                 <HelpCircle className="mr-2 h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Ayuda y Soporte</span>
-              </DropdownMenuItem>
+              </button>
 
               {isAdmin && (
                 <>

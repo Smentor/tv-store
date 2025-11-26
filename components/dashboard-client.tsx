@@ -7,6 +7,7 @@ import { PlansSection } from "@/components/plans-section"
 import { BillingSection } from "@/components/billing-section"
 import { CredentialsSection } from "@/components/credentials-section"
 import { SettingsSection } from "@/components/settings-section"
+import { SupportSection } from "@/components/support-section"
 import { createBrowserClient } from "@/lib/supabase/client"
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
@@ -34,6 +35,14 @@ export default function DashboardClient() {
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
+
+  // Update view when URL param changes (e.g. from header dropdown)
+  useEffect(() => {
+    const view = searchParams.get('view')
+    if (view) {
+      setCurrentView(view)
+    }
+  }, [searchParams])
 
   const checkAdminRole = async () => {
     const supabase = createBrowserClient()
@@ -87,6 +96,9 @@ export default function DashboardClient() {
         </div>
         <div style={{ display: currentView === "settings" ? "block" : "none" }}>
           <SettingsSection />
+        </div>
+        <div style={{ display: currentView === "support" ? "block" : "none" }}>
+          <SupportSection />
         </div>
       </div>
     </DashboardLayout>
