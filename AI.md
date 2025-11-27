@@ -58,6 +58,7 @@ iptv/
 3. **Billing**: Invoice history with pagination
 4. **Credentials**: IPTV access with copy-to-clipboard
 5. **Settings**: Profile, notifications, devices, security (modular components)
+6. **Support**: Ticket system, FAQ, WhatsApp/Email contact channels
 
 ### Admin Panel (`/admin`)
 1. **Users Management**:
@@ -194,6 +195,20 @@ if (result.success) {
 
 ## Recent Updates (November 2024)
 
+### UI Polish & Responsiveness (Latest)
+- **Responsive Dashboard**: Implemented mobile sidebar drawer (Sheet) and responsive grids.
+- **Enhanced Header**: 
+  - Modern avatar design with status indicator.
+  - Integrated Theme Switcher (Dark/Light).
+  - Quick access to Support.
+- **Support Section**: 
+  - Dedicated support view with Ticket Form, FAQ, and Contact Channels.
+  - Integrated with dashboard navigation.
+- **Visual Fixes**:
+  - Resolved persistent red background on support button (Global CSS override).
+  - Fixed layout shifts with `overflow-y: scroll`.
+  - Addressed hydration warnings (`suppressHydrationWarning`).
+
 ### Code Organization & Performance
 - **Settings Modularization**: Split into 4 components (Profile, Notifications, Security, Devices)
 - **User Management Refactoring**: Extracted `UserDetailsModal` from 1500+ line `UsersManagement`
@@ -216,13 +231,6 @@ if (result.success) {
   - Partial update: Breakdown of results
   - Complete success: Success toast only when all updated
 - **User Education**: Added explanatory note in modals (e.g., status requires subscription)
-
-### Bug Fixes & Security
-- **Auto-Confirmed Registration**: Public sign-up auto-confirms email
-- **Secure Account Deletion**: Moved to server action with service role key
-- **Status Update Fixes**: Corrected callback signature mismatches
-- **Database Error Fixes**: Removed `start_date` column reference (doesn't exist)
-- **Modal Crash Prevention**: Added defensive `userLogs || []` check
 
 ## Environment Variables
 
@@ -266,6 +274,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 **Auth Not Persisting:** Ensure using `@supabase/ssr` clients
 **RLS Blocking Admin:** Use `SUPABASE_SERVICE_ROLE_KEY` in server actions
 **Column Not Found:** Run latest migrations, check case-sensitivity
+**Layout Shift:** Add `overflow-y: scroll` to body in globals.css
 
 ## Notes for AI Assistants
 
@@ -291,6 +300,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ---
 
-**Last Updated:** November 23, 2024  
-**Version:** 1.2.0  
+**Last Updated:** November 25, 2024  
+**Version:** 1.3.0  
 **Maintainer:** Development Team
